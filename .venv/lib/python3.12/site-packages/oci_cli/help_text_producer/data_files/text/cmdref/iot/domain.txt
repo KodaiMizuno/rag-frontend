@@ -1,0 +1,40 @@
+domain
+******
+
+
+Description
+===========
+
+An IoT domain is an Oracle Cloud Infrastructure resource that provides
+a managed environment for organizing and managing digital twin
+resources, such as models, adapters, instances and relationships,
+within a compartment and IoT domain group.
+
+To use any API operations, you must be authorized in an IAM policy. If
+you are not authorized, contact an administrator. If you are an
+administrator who needs to create policies to grant users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* change-data-retention-period
+
+* configure-apex-data-access
+
+* configure-direct-data-access
+
+* configure-ords-data-access
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

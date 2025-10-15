@@ -1,0 +1,30 @@
+domain
+******
+
+
+Description
+===========
+
+The properties that define an email domain. An email domain contains
+configuration used to assert responsibility for emails sent from that
+domain.
+
+
+Available Commands
+==================
+
+* add
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* remove
+
+* update

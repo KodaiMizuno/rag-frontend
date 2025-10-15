@@ -1,0 +1,15 @@
+ai-data-platform-collection
+***************************
+
+
+Description
+===========
+
+Results of a AiDataPlatform search. Contains both
+AiDataPlatformSummary items and other information, such as metadata.
+
+
+Available Commands
+==================
+
+* list-ai-data-platforms

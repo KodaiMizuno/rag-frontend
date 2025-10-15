@@ -1,0 +1,32 @@
+digital-twin-model
+******************
+
+
+Description
+===========
+
+A digital twin model, defined using Digital Twins Definition Language,
+specifies the schema for digital twin instance, including its
+components, properties, telemetry, commands, and relationships within
+the IoT domain.
+
+To use any API operations, you must be authorized in an IAM policy. If
+you are not authorized, contact an administrator. If you are an
+administrator who needs to create policies to grant users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* get-spec
+
+* list
+
+* update

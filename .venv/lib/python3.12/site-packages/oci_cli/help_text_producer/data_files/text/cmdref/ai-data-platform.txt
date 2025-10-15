@@ -1,0 +1,44 @@
+ai-data-platform
+****************
+
+
+Description
+===========
+
+Use the AiDataPlatform Control Plane CLI to manage Data Lakes.
+
+
+Available Commands
+==================
+
+* ai-data-platform
+
+  * change-compartment
+
+  * create
+
+  * delete
+
+  * get
+
+  * update
+
+* ai-data-platform-collection
+
+  * list-ai-data-platforms
+
+* work-request
+
+  * cancel
+
+  * get
+
+  * list
+
+* work-request-error
+
+  * list
+
+* work-request-log-entry
+
+  * list-work-request-logs

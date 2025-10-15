@@ -1,0 +1,15 @@
+marketplace-metadata-public-key-summary
+***************************************
+
+
+Description
+===========
+
+Model that contains signed marketplace instance metadata and
+associated signature in JWT form
+
+
+Available Commands
+==================
+
+* list-marketplace-metadata-public-keys

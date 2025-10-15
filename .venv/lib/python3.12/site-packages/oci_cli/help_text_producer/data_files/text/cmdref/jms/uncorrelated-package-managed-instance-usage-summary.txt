@@ -1,0 +1,16 @@
+uncorrelated-package-managed-instance-usage-summary
+***************************************************
+
+
+Description
+===========
+
+Summary of a managed instance where a given uncorrelated package was
+detected. Contains the count of application where the package was
+detected with this application.
+
+
+Available Commands
+==================
+
+* list-uncorrelated-package-managed-instance-usage

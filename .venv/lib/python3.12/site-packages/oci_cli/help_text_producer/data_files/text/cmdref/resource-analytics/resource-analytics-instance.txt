@@ -1,0 +1,34 @@
+resource-analytics-instance
+***************************
+
+
+Description
+===========
+
+A ResourceAnalyticsInstance is an ADW housing analytics for all of a
+customers’ OCI resources.
+
+To use any of the API operations, you must be authorized in an IAM
+policy. If you’re not authorized, talk to an administrator. If you’re
+an administrator who needs to write policies to give users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create
+
+* delete
+
+* disable-oac
+
+* enable-oac
+
+* get
+
+* list
+
+* update

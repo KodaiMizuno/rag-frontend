@@ -1,0 +1,29 @@
+digital-twin-relationship
+*************************
+
+
+Description
+===========
+
+A digital twin relationship represents an association between two
+digital twin instances. It can include properties to describe the
+nature and context of the association within the IoT domain.
+
+To use any API operations, you must be authorized in an IAM policy. If
+you are not authorized, contact an administrator. If you are an
+administrator who needs to create policies to grant users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

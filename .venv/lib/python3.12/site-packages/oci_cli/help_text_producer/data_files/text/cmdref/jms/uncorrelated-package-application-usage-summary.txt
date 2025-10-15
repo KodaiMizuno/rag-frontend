@@ -1,0 +1,16 @@
+uncorrelated-package-application-usage-summary
+**********************************************
+
+
+Description
+===========
+
+Summary of an application where a given libary was detected. Contains
+the count of managed instances where the package was detected with
+this application.
+
+
+Available Commands
+==================
+
+* list-uncorrelated-package-application-usage

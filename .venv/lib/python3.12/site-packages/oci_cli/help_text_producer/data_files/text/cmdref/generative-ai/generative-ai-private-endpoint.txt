@@ -1,0 +1,22 @@
+generative-ai-private-endpoint
+******************************
+
+
+Description
+===========
+
+Generative AI private endpoint.
+
+
+Available Commands
+==================
+
+* change-compartment
+
+* create
+
+* delete
+
+* get
+
+* update

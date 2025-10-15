@@ -1,0 +1,16 @@
+library-managed-instance-usage-summary
+**************************************
+
+
+Description
+===========
+
+Summary of a managed instance where a given library was detected
+statically and/or dynamically. Contains the count of applications
+where the library was detected.
+
+
+Available Commands
+==================
+
+* list-library-managed-instance-usage

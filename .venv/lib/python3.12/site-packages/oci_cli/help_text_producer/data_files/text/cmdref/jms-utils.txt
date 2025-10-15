@@ -1,0 +1,65 @@
+jms-utils
+*********
+
+
+Description
+===========
+
+The CLI for Analyze Applications and other utilities of Java
+Management Service.
+
+
+Available Commands
+==================
+
+* analyze-applications-configuration
+
+  * get
+
+  * update
+
+* java-migration-analysis
+
+  * delete
+
+  * get
+
+  * list
+
+  * request
+
+* performance-tuning-analysis
+
+  * delete
+
+  * get
+
+  * list
+
+  * request
+
+* subscription-acknowledgment-configuration
+
+  * get
+
+  * update
+
+* work-item-summary
+
+  * list-work-items
+
+* work-request
+
+  * cancel
+
+  * get
+
+  * list
+
+* work-request-error
+
+  * list
+
+* work-request-log-entry
+
+  * list-work-request-logs

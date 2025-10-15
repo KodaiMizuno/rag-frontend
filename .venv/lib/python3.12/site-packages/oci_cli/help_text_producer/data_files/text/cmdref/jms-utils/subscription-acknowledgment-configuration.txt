@@ -1,0 +1,16 @@
+subscription-acknowledgment-configuration
+*****************************************
+
+
+Description
+===========
+
+The configuration for subscription acknowledgment.
+
+
+Available Commands
+==================
+
+* get
+
+* update

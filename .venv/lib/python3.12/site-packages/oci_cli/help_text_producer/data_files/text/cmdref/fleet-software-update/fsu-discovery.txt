@@ -1,0 +1,32 @@
+fsu-discovery
+*************
+
+
+Description
+===========
+
+Exadata Fleet Update Discovery resource details.
+
+
+Available Commands
+==================
+
+* abort
+
+* change-compartment
+
+* create
+
+* create-db
+
+* create-exadb-stack
+
+* create-gi
+
+* create-guest-os
+
+* delete
+
+* get
+
+* update

@@ -1,0 +1,121 @@
+iot
+***
+
+
+Description
+===========
+
+Use the Internet of Things (IoT) CLI to manage IoT domain groups,
+domains, and digital twin resources including models, adapters,
+instances, and relationships. For more information, see Internet of
+Things.
+
+
+Available Commands
+==================
+
+* digital-twin-adapter
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* digital-twin-instance
+
+  * create
+
+  * delete
+
+  * get
+
+  * get-content
+
+  * invoke-raw-binary-command
+
+  * invoke-raw-json-command
+
+  * invoke-raw-text-command
+
+  * list
+
+  * update
+
+* digital-twin-model
+
+  * create
+
+  * delete
+
+  * get
+
+  * get-spec
+
+  * list
+
+  * update
+
+* digital-twin-relationship
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* domain
+
+  * change-compartment
+
+  * change-data-retention-period
+
+  * configure-apex-data-access
+
+  * configure-direct-data-access
+
+  * configure-ords-data-access
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* domain-group
+
+  * change-compartment
+
+  * configure-data-access
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* work-request
+
+  * get
+
+  * list
+
+  * list-errors
+
+  * list-logs

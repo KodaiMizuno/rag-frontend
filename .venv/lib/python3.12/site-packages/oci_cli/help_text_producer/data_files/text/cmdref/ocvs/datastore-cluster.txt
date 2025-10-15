@@ -1,0 +1,37 @@
+datastore-cluster
+*****************
+
+
+Description
+===========
+
+Use the Oracle Cloud VMware CLI to create SDDCs and manage ESXi hosts
+and software. For more information, see Oracle Cloud VMware Solution.
+
+
+Available Commands
+==================
+
+* add-datastore
+
+* attach-to-cluster
+
+* attach-to-esxi-host
+
+* change-compartment
+
+* create
+
+* delete
+
+* detach-from-cluster
+
+* detach-from-esxi-host
+
+* get
+
+* list
+
+* remove-datastore
+
+* update

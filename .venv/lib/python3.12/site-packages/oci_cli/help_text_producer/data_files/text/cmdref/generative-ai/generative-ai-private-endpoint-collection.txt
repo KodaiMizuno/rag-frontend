@@ -1,0 +1,14 @@
+generative-ai-private-endpoint-collection
+*****************************************
+
+
+Description
+===========
+
+Collection of GenerativeAiPrivateEndpointSummary
+
+
+Available Commands
+==================
+
+* list-generative-ai-private-endpoints

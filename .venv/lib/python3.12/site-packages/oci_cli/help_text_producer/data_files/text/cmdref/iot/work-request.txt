@@ -1,0 +1,24 @@
+work-request
+************
+
+
+Description
+===========
+
+An asynchronous work request helps monitor long-running operations.
+When you initiate a long-running operation, the service creates a work
+request. This work request acts as an activity log, allowing you to
+track each step of the operation’s progress. Each work request has an
+OCID, enabling programmatic interaction and automation.
+
+
+Available Commands
+==================
+
+* get
+
+* list
+
+* list-errors
+
+* list-logs

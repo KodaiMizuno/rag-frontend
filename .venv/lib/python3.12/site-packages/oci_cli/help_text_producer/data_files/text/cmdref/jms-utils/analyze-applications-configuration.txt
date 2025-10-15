@@ -1,0 +1,16 @@
+analyze-applications-configuration
+**********************************
+
+
+Description
+===========
+
+The configuration for analyzing applications.
+
+
+Available Commands
+==================
+
+* get
+
+* update

@@ -1,0 +1,14 @@
+library-inventory
+*****************
+
+
+Description
+===========
+
+Inventory of libraries in a fleet during a specified time period.
+
+
+Available Commands
+==================
+
+* summarize

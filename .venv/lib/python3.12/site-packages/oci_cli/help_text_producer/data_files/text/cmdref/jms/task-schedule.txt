@@ -1,0 +1,58 @@
+task-schedule
+*************
+
+
+Description
+===========
+
+The properties of a task schedule.
+
+
+Available Commands
+==================
+
+* create
+
+* create-task-schedule-add-installation-site-task-details
+
+* create-task-schedule-crypto-task-details
+
+* create-task-schedule-deployed-application-migration-task-details
+
+* create-task-schedule-java-migration-task-details
+
+* create-task-schedule-jfr-task-details
+
+* create-task-schedule-performance-tuning-task-details
+
+* create-task-schedule-remove-installation-site-task-details
+
+* create-task-schedule-scan-java-server-task-details
+
+* create-task-schedule-scan-library-task-details
+
+* delete
+
+* get
+
+* list
+
+* update
+
+* update-task-schedule-add-installation-site-task-details
+
+* update-task-schedule-crypto-task-details
+
+* update-task-schedule-deployed-application-migration-task-details
+
+* update-task-schedule-java-migration-task-details
+
+* update-task-schedule-jfr-task-details
+
+* update-task-schedule-performance-tuning-task-details
+
+* update-task-schedule-remove-installation-site-task-details
+
+* update-task-schedule-scan-java-server-task-details
+
+* update-task-schedule-scan-library-task-details

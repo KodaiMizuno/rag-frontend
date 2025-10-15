@@ -1,0 +1,68 @@
+resource-analytics
+******************
+
+
+Description
+===========
+
+Use the Resource Analytics CLI to manage Resource Analytics Instances.
+
+
+Available Commands
+==================
+
+* monitored-region
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+* resource-analytics-instance
+
+  * change-compartment
+
+  * create
+
+  * delete
+
+  * disable-oac
+
+  * enable-oac
+
+  * get
+
+  * list
+
+  * update
+
+* tenancy-attachment
+
+  * create
+
+  * delete
+
+  * get
+
+  * list
+
+  * update
+
+* work-request
+
+  * cancel
+
+  * get
+
+  * list
+
+* work-request-error
+
+  * list
+
+* work-request-log-entry
+
+  * list

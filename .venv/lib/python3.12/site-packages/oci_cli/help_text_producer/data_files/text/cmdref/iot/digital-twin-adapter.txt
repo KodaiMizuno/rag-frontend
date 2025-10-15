@@ -1,0 +1,31 @@
+digital-twin-adapter
+********************
+
+
+Description
+===========
+
+The digital twin adapter maps incoming data from IoT device into the
+corresponding digital twin instance. It defines the envelope
+structure, reference payload, routing and transformation rules using
+JSON Path and JQ to normalize the raw device data within the IoT
+domain.
+
+To use any API operations, you must be authorized in an IAM policy. If
+you are not authorized, contact an administrator. If you are an
+administrator who needs to create policies to grant users access, see
+Getting Started with Policies.
+
+
+Available Commands
+==================
+
+* create
+
+* delete
+
+* get
+
+* list
+
+* update

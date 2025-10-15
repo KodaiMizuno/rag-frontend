@@ -1,0 +1,15 @@
+create-marketplace-external-attested-metadata-details
+*****************************************************
+
+
+Description
+===========
+
+Payload that customer will use to generate JWT for launched instance
+associated with Marketplace listing
+
+
+Available Commands
+==================
+
+* create-marketplace-external-attested-metadata
