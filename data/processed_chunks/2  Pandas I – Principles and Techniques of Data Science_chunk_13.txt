@@ -1,0 +1,24 @@
+he data exists. The row labels are the first
+argument to the .loc function; the column labels are the second.
+Arguments to .loc can be:
+A single value.
+A slice.
+A list.
+# Extract the last 5 rows of the DataFrame
+elections.tail(5 )
+2 . 3 . 2  L a b e l - b a s e d  E x t r a c t i o n :  I n d e x i n g  w i t h  . l o cFor example, to select a single value, we can select the row labeled 0 and the column labeled Candidate from the
+elections DataFrame.
+'Andrew Jackson'
+Keep in mind that passing in just one argument as a single value will produce a Series. Below, weʼve extracted a subset of the
+"Popular vote" column as a Series.
+87     15761254
+25       848019
+179    74216154
+Name: Popular vote, dtype: int64
+Note that if we pass "Popular vote" as a list, the output will be a DataFrame.
+Popular vote
+87 15761254
+25 848019
+179 74216154
+To select multiple rows and columns, we can use Python slice notation. Here, we select the rows from labels 0 to 3 and the
+columns from labels "Year" to "Popu

@@ -1,0 +1,20 @@
+c[[0, 1, 2, 3], ['Year', 'Candidate', 'Party', 'Popular vote']] - Previous Approach
+elections.iloc[[0 , 1 , 2 , 3 ], [0 , 1 , 2 , 3 ]]Year Candidate Party Popular vote
+3 1828 John Quincy Adams National Republican 500897
+And just like with .loc, we can use a colon with .iloc to extract all rows or columns.
+Year Candidate Party
+0 1824 Andrew Jackson Democratic-Republican
+1 1824 John Quincy Adams Democratic-Republican
+2 1828 Andrew Jackson Democratic
+3 1828 John Quincy Adams National Republican
+4 1832 Andrew Jackson Democratic
+... ... ... ...
+182 2024 Donald Trump Republican
+183 2024 Kamala Harris Democratic
+184 2024 Jill Stein Green
+185 2024 Robert Kennedy Independent
+186 2024 Chase Oliver Libertarian Party
+187 rows × 3 columns
+This discussion begs the question: when should we use .loc vs. .iloc? In most cases, .loc is generally safer to use. You can
+imagine .iloc may return incorrect values when applied to a dataset where the ordering of data can change. However, .iloc
+can still be usef

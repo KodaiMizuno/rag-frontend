@@ -1,0 +1,18 @@
+ 1828 John Quincy Adams National Republican 500897
+Slicing is no longer inclusive in .iloc — itʼs exclusive. In other words, the right end of a slice is not included when using .iloc.
+This is one of the subtleties of pandas syntax; you will get used to it with practice.
+List behavior works just as expected.
+Year Candidate Party Popular vote
+0 1824 Andrew Jackson Democratic-Republican 151271
+1 1824 John Quincy Adams Democratic-Republican 113142
+2 1828 Andrew Jackson Democratic 642806
+2 . 3 . 3  I n t e g e r - b a s e d  E x t r a c t i o n :  I n d e x i n g  w i t h  . i l o c
+# elections.loc[0, "Candidate"] - Previous approach
+elections.iloc[0 , 1 ]
+0th
+elections.iloc[[1 ,2 ,3 ],1 ]
+# elections.loc[0:3, 'Year':'Popular vote'] - Previous approach
+elections.iloc[0 :4 , 0 :4 ]
+#elections.loc[[0, 1, 2, 3], ['Year', 'Candidate', 'Party', 'Popular vote']] - Previous Approach
+elections.iloc[[0 , 1 , 2 , 3 ], [0 , 1 , 2 , 3 ]]Year Candidate Party Popular vote
+3 1828 John Quincy Adams Nationa

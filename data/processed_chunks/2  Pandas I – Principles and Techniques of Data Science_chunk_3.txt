@@ -1,0 +1,24 @@
+0 . 1  U s i n g  a  L i s t  a n d  C o l um n  N a m e ( s )
+df_list = pd.DataFrame([1 , 2 , 3 ], columns=["Numbers"])
+df_list
+2  Pandas I Numbers
+0 1
+1 2
+2 3
+The second creates a DataFrame with the columns Numbers and Description. Notice how a 2D list of values is required to
+initialize the second DataFrame — each nested list represents a single row of data.
+Number Description
+0 1 one
+1 2 two
+A third (and more common) way to create a DataFrame is with a dictionary. The dictionary keys represent the column names,
+and the dictionary values represent the column values.
+Below are two ways of implementing this approach. The first is based on specifying the columns of the DataFrame, whereas
+the second is based on specifying the rows of the DataFrame.
+Fruit Price
+0 Strawberry 5.49
+1 Orange 3.99
+Fruit Price
+0 Strawberry 5.49
+1 Orange 3.99
+Earlier, we explained how a Series was synonymous to a column in a DataFrame. It follows, then, that a DataFrame is
+equivalent to a collection of Seri

@@ -1,0 +1,14 @@
+f the data (people, cities, points in time, etc.) and what features to measure.
+How can we sample more data?
+Scrape the web, collect manually, run experiments, etc.
+Is our data representative of the population we want to study?
+If our data is not representative of our population of interest, then we can come to incorrect conclusions.
+Key procedures: data acquisition, data cleaning
+1 . 1 . 2  O b t a i n  D a t aRaw data itself is not inherently useful. Itʼs impossible to discern all the patterns and relationships between
+variables without carefully investigating them. Therefore, translating pure data into actionable insights is a key job
+of a data scientist. For example, we may choose to ask:
+How is our data organized, and what does it contain?
+Knowing what the data says about the world helps us better understand the world.
+Do we have relevant data?
+If the data we have collected is not useful to the question at hand, then we must collect more data.
+What are the biases, anomalies, or ot

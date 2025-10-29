@@ -1,0 +1,4 @@
+WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="/home/kmizuno/oracle_dss_hybrid/wallet_dir")))
+SSL_SERVER_DN_MATCH = yes
+SSL_CLIENT_AUTHENTICATION = true
+

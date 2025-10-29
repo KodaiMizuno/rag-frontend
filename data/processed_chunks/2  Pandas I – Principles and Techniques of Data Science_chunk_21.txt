@@ -1,0 +1,17 @@
+iloc? In most cases, .loc is generally safer to use. You can
+imagine .iloc may return incorrect values when applied to a dataset where the ordering of data can change. However, .iloc
+can still be useful — for example, if you are looking at a DataFrame of sorted movie earnings and want to get the median
+earnings for a given year, you can use .iloc to index into the middle.
+Overall, it is important to remember that:
+.loc performances label-based extraction.
+.iloc performs integer-based extraction.
+The [] selection operator is the most baffling of all, yet the most commonly used. It only takes a single argument, which may
+be one of the following:
+1. A slice of row numbers.
+2. A list of column labels.
+3. A single-column label.
+That is, [] is context-dependent. Letʼs see some examples.
+Say we wanted the first four rows of our elections DataFrame.
+elections.iloc[:, 0 :3 ]
+2 . 3 . 4  C o n t e x t - d e p e n d e n t  E x t r a c t i o n :  I n d e x i n g  w i t h  [ ]
+2 . 3 . 4 . 1  A  s l 

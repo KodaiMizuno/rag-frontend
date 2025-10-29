@@ -1,0 +1,21 @@
+bject')
+And for the shape of the DataFrame, we can use DataFrame.shape to get the number of rows followed by the number of
+columns:
+(187, 6)
+2.3 Slicing in DataFrames
+Now that weʼve learned more about DataFrames, letʼs dive deeper into their capabilities.
+The API (Application Programming Interface) for the DataFrame class is enormous. In this section, weʼll discuss several
+methods of the DataFrame API that allow us to extract subsets of data.
+The simplest way to manipulate a DataFrame is to extract a subset of rows and columns, known as slicing.
+Common ways we may want to extract data are grabbing:
+The first or last n rows in the DataFrame.
+Data with a certain label.
+Data at a certain position.
+We will do so with four primary methods of the DataFrame class:
+1. .head and .tail
+2. .loc
+3. .iloc
+4. []
+The simplest scenario in which we want to extract data is when we simply want to select the first or last few rows of the
+DataFrame.
+To extract the first n rows of a DataFrame df, we use the

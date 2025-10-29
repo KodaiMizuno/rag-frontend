@@ -1,0 +1,21 @@
+ex column
+elections = pd.read_csv("data/elections.csv", index_col = "Candidate")
+electionsYear Party Popular vote Result %
+Candidate
+Andrew Jackson 1824 Democratic-Republican 151271 loss 57.210122
+John Quincy Adams 1824 Democratic-Republican 113142 win 42.789878
+Andrew Jackson 1828 Democratic 642806 win 56.203927
+John Quincy Adams 1828 National Republican 500897 loss 43.796073
+Andrew Jackson 1832 Democratic 702735 win 54.574789
+... ... ... ... ... ...
+Donald Trump 2024 Republican 77303568 win 49.808629
+Kamala Harris 2024 Democratic 75019230 loss 48.336772
+Jill Stein 2024 Green 861155 loss 0.554864
+Robert Kennedy 2024 Independent 756383 loss 0.487357
+Chase Oliver 2024 Libertarian Party 650130 loss 0.418895
+187 rows × 5 columns
+We can also select a new column and set it as the index of the DataFrame. For example, we can set the index of the elections
+DataFrame to represent the candidateʼs party.
+Candidate Year Popular vote Result %
+Party
+Democratic-Republican Andrew Jackson 1824 151271 l

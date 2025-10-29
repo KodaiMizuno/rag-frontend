@@ -1,0 +1,11 @@
+to organize data. This is in large part due
+to the simplicity and flexibility of tables. Tables allow us to represent each observation, or instance of collecting
+data from an individual, as its own row. We can record each observationʼs distinct characteristics, or features, in
+separate columns.
+To see this in action, weʼll explore the elections dataset, which stores information about political candidates
+who ran for president of the United States in previous years.
+In the elections dataset, each row (blue box) represents one instance of a candidate running for president in a
+particular year. For example, the first row represents Andrew Jackson running for president in the year 1824. Each
+column (yellow box) represents one characteristic piece of information about each presidential candidate. For
+example, the column named “Result” stores whether or not the candidate won the election.
+Your work in Data 8 helped you grow very familiar with using and interpreting data stored in a tabular f

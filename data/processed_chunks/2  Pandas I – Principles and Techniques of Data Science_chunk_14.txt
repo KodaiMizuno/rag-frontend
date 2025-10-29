@@ -1,0 +1,21 @@
+r vote
+87 15761254
+25 848019
+179 74216154
+To select multiple rows and columns, we can use Python slice notation. Here, we select the rows from labels 0 to 3 and the
+columns from labels "Year" to "Popular vote". Notice that unlike Python slicing, .loc is inclusive of the right upper
+bound.
+Year Candidate Party Popular vote
+0 1824 Andrew Jackson Democratic-Republican 151271
+1 1824 John Quincy Adams Democratic-Republican 113142
+2 1828 Andrew Jackson Democratic 642806
+3 1828 John Quincy Adams National Republican 500897
+Suppose that instead, we want to extract all column values for the first four rows in the elections DataFrame. The shorthand
+: is useful for this.
+Year Candidate Party Popular vote Result %
+0 1824 Andrew Jackson Democratic-Republican 151271 loss 57.210122
+1 1824 John Quincy Adams Democratic-Republican 113142 win 42.789878
+2 1828 Andrew Jackson Democratic 642806 win 56.203927
+elections.loc[0 , 'Candidate']
+elections.loc[[8 7 , 2 5 , 1 7 9 ], "Popular vote"]
+elections.loc[[8 7

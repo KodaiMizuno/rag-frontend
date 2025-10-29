@@ -1,0 +1,14 @@
+lps us better understand the world.
+Do we have relevant data?
+If the data we have collected is not useful to the question at hand, then we must collect more data.
+What are the biases, anomalies, or other issues with the data?
+These can lead to many false conclusions if ignored, so data scientists must always be aware of these
+issues.
+How do we transform the data to enable effective analysis?
+Data is not always easy to interpret at first glance, so a data scientist should strive to reveal the hidden
+insights.
+Key procedures: exploratory data analysis, data visualization.
+1 . 1 . 3  U n d er s t a n d  t h e D a t aAfter observing the patterns in our data, we can begin answering our questions. This may require that we predict a
+quantity (machine learning) or measure the effect of some treatment (inference).
+From here, we may choose to report our results, or possibly conduct more analysis. We may not be satisfied with
+our findings, or our initial exploration may have brought up new questi

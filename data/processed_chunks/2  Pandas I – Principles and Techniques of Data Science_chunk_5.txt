@@ -1,0 +1,32 @@
+ual Series into a DataFrame using two common methods (shown below):
+0
+r1 a1
+r2 a2
+r3 a3
+0
+r1 b1
+r2 b2
+r3 b3
+To merge the two Series and specify their column names, we use the following syntax:
+A-column B-column
+r1 a1 b1
+r2 a2 b2
+r3 a3 b3
+On a more technical note, an index doesnʼt have to be an integer, nor does it have to be unique. For example, we can set the
+index of the elections DataFrame to be the name of presidential candidates.
+# Notice how our indices, or row labels, are the same
+s_a = pd.Series(["a1", "a2", "a3"], index = ["r1", "r2", "r3"])
+s_b = pd.Series(["b1", "b2", "b3"], index = ["r1", "r2", "r3"])
+pd.DataFrame(s_a)
+s_b.to_frame()
+pd.DataFrame({
+    "A-column": s_a, 
+    "B-column": s_b
+})
+2 . 1 . 2  I n d i c e s
+# Creating a DataFrame from a CSV file and specifying the index column
+elections = pd.read_csv("data/elections.csv", index_col = "Candidate")
+electionsYear Party Popular vote Result %
+Candidate
+Andrew Jackson 1824 Democratic-Republican 151271 loss 57.210122
+Joh

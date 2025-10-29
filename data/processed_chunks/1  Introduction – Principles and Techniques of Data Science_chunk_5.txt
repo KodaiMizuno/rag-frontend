@@ -1,0 +1,16 @@
+ the question.
+Here are some things you should ask yourself before framing a question.
+What problems are we trying to solve?
+The goal of asking a question should be clear in order to justify your efforts to stakeholders.
+What are the hypotheses we want to test?
+This gives a clear perspective from which to analyze final results.
+What are the metrics for our success?
+This establishes a clear point to know when to conclude the project.
+1 . 1 . 1  A s k a  Q u es t i o nThe second entry point to the lifecycle is by obtaining data. A careful analysis of any problem requires the use of
+data. Data may be readily available to us, or we may have to embark on a process to collect it. When doing so, it is
+crucial to ask the following:
+What data do we have, and what data do we need?
+Define the units of the data (people, cities, points in time, etc.) and what features to measure.
+How can we sample more data?
+Scrape the web, collect manually, run experiments, etc.
+Is our data representative of the p

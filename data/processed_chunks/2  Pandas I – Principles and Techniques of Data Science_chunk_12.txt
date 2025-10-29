@@ -1,0 +1,17 @@
+t the last n rows of the DataFrame.
+Year Candidate Party Popular vote Result %
+182 2024 Donald Trump Republican 77303568 win 49.808629
+183 2024 Kamala Harris Democratic 75019230 loss 48.336772
+184 2024 Jill Stein Green 861155 loss 0.554864
+185 2024 Robert Kennedy Independent 756383 loss 0.487357
+186 2024 Chase Oliver Libertarian Party 650130 loss 0.418895
+For the more complex task of extracting data with specific column or index labels, we can use .loc. The .loc accessor allows
+us to specify the labels of rows and columns we wish to extract. The labels (commonly referred to as the indices) are the bold
+text on the far left of a DataFrame, while the column labels are the column names found at the top of a DataFrame.
+To grab data with .loc, we must specify the row and column label(s) where the data exists. The row labels are the first
+argument to the .loc function; the column labels are the second.
+Arguments to .loc can be:
+A single value.
+A slice.
+A list.
+# Extract the last 5 rows of th

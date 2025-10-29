@@ -1,0 +1,12 @@
+tutordatabase_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4fa97c630b8303_tutordatabase_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+tutordatabase_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4fa97c630b8303_tutordatabase_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+tutordatabase_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4fa97c630b8303_tutordatabase_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+tutordatabase_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4fa97c630b8303_tutordatabase_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+tutordatabase_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-chicago-1.oraclecloud.com))(connect_data=(service_name=g4fa97c630b8303_tutordatabase_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+

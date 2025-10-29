@@ -1,0 +1,21 @@
+anted the first four rows of our elections DataFrame.
+elections.iloc[:, 0 :3 ]
+2 . 3 . 4  C o n t e x t - d e p e n d e n t  E x t r a c t i o n :  I n d e x i n g  w i t h  [ ]
+2 . 3 . 4 . 1  A  s l i c e  of  r o w  n u m be r s
+elections[0 :4 ]Year Candidate Party Popular vote Result %
+0 1824 Andrew Jackson Democratic-Republican 151271 loss 57.210122
+1 1824 John Quincy Adams Democratic-Republican 113142 win 42.789878
+2 1828 Andrew Jackson Democratic 642806 win 56.203927
+3 1828 John Quincy Adams National Republican 500897 loss 43.796073
+Suppose we now want the first four columns.
+Year Candidate Party Popular vote
+0 1824 Andrew Jackson Democratic-Republican 151271
+1 1824 John Quincy Adams Democratic-Republican 113142
+2 1828 Andrew Jackson Democratic 642806
+3 1828 John Quincy Adams National Republican 500897
+4 1832 Andrew Jackson Democratic 702735
+... ... ... ... ...
+182 2024 Donald Trump Republican 77303568
+183 2024 Kamala Harris Democratic 75019230
+184 2024 Jill Stein Green 861155
+18

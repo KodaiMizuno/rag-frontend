@@ -1,0 +1,42 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+*.sqlite3
+
+# === Environments ===
+.env
+venv/
+.env/
+myenv*/
+.venv/
+.ipynb_checkpoints
+
+myenv/
+
+# === Compiled / build files ===
+build/
+dist/
+*.egg
+*.manifest
+*.spec
+
+# === OS / Editor ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# === Jupyter / Notebooks ===
+*.ipynb_checkpoints
+*.ipynb_autosave
+
+# === Cache ===
+__pycache__/
+.cache/
+.pytest_cache/

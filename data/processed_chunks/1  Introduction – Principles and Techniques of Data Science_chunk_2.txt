@@ -1,0 +1,14 @@
+range of applications from science and medicine to sports.
+While data science has immense potential to address challenging problems facing society by enhancing our critical
+thinking, it can also be used obscure complex decisions and reinforce historical trends and biases. This course will
+implore you to consider the ethics of data science within its applications.
+Data science is fundamentally human-centered and facilitates decision-making by quantitatively balancing
+tradeoffs. To quantify things reliably, we must use and analyze data appropriately, apply critical thinking and
+skepticism at every step of the way, and consider how our decisions affect others.
+Ultimately, data science is the application of data-centric, computational, and inferential thinking to:
+Understand the world (science).
+Solve problems (engineering).
+1  Introduction
+L e a r ni ng  O u t c o m e s
+st
+ 1  Introduction A true mastery of data science requires a deep theoretical understanding and strong grasp of dom
