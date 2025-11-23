@@ -1,3 +1,0 @@
-… Googling! Answers to your questions can be found in documentation, Stack Overflow, etc. Being
-able to search for, read, and implement documentation is an important life skill for any data scientist.
-With that, we will move on to Pandas II!
