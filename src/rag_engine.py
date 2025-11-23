@@ -1,0 +1,175 @@
+import os
+import numpy as np
+import cohere
+import re
+import random 
+from sklearn.metrics.pairwise import cosine_similarity
+
+class RAGEngine:
+    def __init__(self, db_conn, table_name="DOC_CHUNKS_V4"):
+        self.co = cohere.ClientV2(api_key=os.getenv("COHERE_API_KEY"))
+        self.conn = db_conn
+        self.table_name = table_name
+        self.texts = []
+        self.embeddings = []
+        self._load_vectors()
+
+    def _load_vectors(self):
+        print("📥 Loading vectors from DB...")
+        with self.conn.cursor() as cur:
+            # CHANGED: Added 'metadata' to the SELECT
+            cur.execute(f"SELECT chunk_text, embedding, metadata FROM {self.table_name}")
+            rows = cur.fetchall()
+        
+        self.metadata = []  # New list to store filenames
+        
+        for text, vec, meta in rows:
+            self.texts.append(text.read() if hasattr(text, "read") else text)
+            self.embeddings.append(np.array(vec, dtype=np.float32))
+            self.metadata.append(meta) # Store metadata
+        
+        # ... rest of the normalization code remains the same ...
+        self.embeddings = np.vstack(self.embeddings)
+        norms = np.linalg.norm(self.embeddings, axis=1, keepdims=True)
+        self.embeddings = self.embeddings / np.maximum(norms, 1e-12)
+        print(f"✅ Loaded {len(self.embeddings)} embeddings.")
+
+    def search(self, query, top_k=5):
+        # ... embedding logic remains the same ...
+        resp = self.co.embed(
+             model="embed-english-v3.0", texts=[query],
+             input_type="search_query", embedding_types=["float"]
+        )
+        query_vec = np.array(resp.embeddings.float[0], dtype=np.float32).reshape(1, -1)
+        query_vec = query_vec / np.maximum(np.linalg.norm(query_vec), 1e-12)
+        
+        scores = cosine_similarity(query_vec, self.embeddings)[0]
+        top_idxs = np.argsort(scores)[-top_k:][::-1]
+        
+        # CHANGED: Extract filename from the JSON metadata string
+        results = []
+        sources = []
+        for i in top_idxs:
+             results.append(self.texts[i])
+             
+             # Simple parsing to find "source": "filename.pdf"
+             try:
+                 # Extract the source filename from the metadata string
+                 import json
+                 meta_json = json.loads(self.metadata[i])
+                 sources.append(meta_json.get("source", "Unknown"))
+             except:
+                 sources.append("Unknown Source")
+
+        return results, sources  # Return both text and sources
+
+    def get_tutor_hint(self, query, context):
+        context_str = "\n\n".join(context)
+        prompt = f"""
+        You are a Data Science TA. 
+        Context: {context_str}
+        Student Question: {query}
+        
+        Now, respond as a helpful TA:
+        1. Offer a brief explanation of the underlying concept.
+        2. Give 2-3 hints or questions that guide the student toward the solution.
+        3. Be concise, clear, and friendly.
+        """
+        gen = self.co.chat(
+            model="command-a-03-2025",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
+        )
+        return gen.message.content[0].text
+
+    def generate_mcq(self, past_query, context=None):
+        """
+        Strict Alignment + Quality Guardrails.
+        """
+        
+        # 1. Angles (Renamed "common errors" to be safer)
+        angles = [
+            "conceptual understanding",        
+            "syntax and coding specifics",     
+            "a real-world application",        
+            "troubleshooting a specific scenario",  # Safer than "identifying errors"
+            "predicting the output of code"         # Very precise, hard to mess up
+        ]
+        chosen_angle = random.choice(angles)
+
+        # 2. Build the Prompt with GUARDRAILS
+        if context:
+            context_str = "\n\n".join(context)
+            prompt = f"""
+            You are an expert Data Science Exam Creator.
+            Create a multiple-choice question based STRICTLY on the provided context.
+            
+            Target Topic: "{past_query}"
+            Learning Angle: {chosen_angle}
+            
+            ### CRITICAL RULES (Follow these or you will be fired):
+            1. **Clarity First:** The question must be unambiguous. Avoid double negatives (e.g., do NOT ask "Which is not incorrect?").
+            2. **Single Truth:** There must be EXACTLY ONE correct answer.
+            3. **Clear Distractors:** The wrong answers (A/B/C/D) must be demonstrably false, not just "less good" or "confusing."
+            4. **No Code Tricks:** If the question involves code, ensure the syntax is standard.
+            
+            Context to use:
+            {context_str}
+            
+            Format:
+            Question: <text>
+            A) <option>
+            B) <option>
+            C) <option>
+            D) <option>
+            Correct Answer: <A/B/C/D>
+            Explanation: <Clear explanation why the correct answer is right and why others are wrong>
+            """
+        else:
+            # Fallback for internal knowledge
+            prompt = f"""
+            You are an expert Data Science Exam Creator.
+            Generate a clear, high-quality multiple-choice question about: "{past_query}".
+            
+            ### CRITICAL RULES:
+            1. Avoid negative logic (e.g. "Which is NOT..."). Use positive framing (e.g. "Which IS...").
+            2. Ensure exactly one answer is correct.
+            3. Focus on: {chosen_angle}.
+
+            Format:
+            Question: <text>
+            A) ...
+            B) ...
+            C) ...
+            D) ...
+            Correct Answer: <A/B/C/D>
+            Explanation: <text>
+            """
+
+        # 3. Call Cohere (Standard)
+        try:
+            gen = self.co.chat(
+                model="command-a-03-2025",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.4  # LOWER TEMP = Less "creative", more "precise"
+            )
+            text = gen.message.content[0].text
+        except Exception as e:
+            print(f"⚠️ Error calling Cohere: {e}")
+            return None, None, None
+        
+        # 4. Parsing (Standard regex logic from before)
+        try:
+            if "Correct Answer:" not in text: return None, None, None
+            parts = text.split("Correct Answer:")
+            question_part = parts[0].strip()
+            remaining_text = parts[1]
+            match = re.search(r"([A-D])", remaining_text, re.IGNORECASE)
+            if not match: return None, None, None
+            correct_letter = match.group(1).upper()
+            explanation = ""
+            if "Explanation:" in remaining_text:
+                explanation = remaining_text.split("Explanation:")[1].strip()
+            return question_part, correct_letter, explanation
+        except Exception:
+            return None, None, None
