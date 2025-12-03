@@ -4,7 +4,7 @@ import json
 import cohere
 from pypdf import PdfReader
 from dotenv import load_dotenv
-from database import DatabaseManager
+from src.database import DatabaseManager
 from datetime import datetime
 
 # --- CONFIGURATION ---
