@@ -1,0 +1,50 @@
+# =======================================
+# Environment & Secrets
+# =======================================
+.env
+*.env
+.env.*
+secrets.json
+config.json
+
+# =======================================
+# Python
+# =======================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+env/
+venv/
+.venv/
+.ipynb_checkpoints/
+
+# =======================================
+# OS and Editor files
+# =======================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =======================================
+# Logs and Caches
+# =======================================
+*.log
+logs/
+.cache/
+
+# =======================================
+# Local data and generated files
+# =======================================
+vector_db/
+*.db
+*.sqlite

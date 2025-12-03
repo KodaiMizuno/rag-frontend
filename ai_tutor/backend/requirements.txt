@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+PyJWT
+python-multipart
+bcrypt
+passlib[bcrypt]
+oracledb
+pydantic
+numpy

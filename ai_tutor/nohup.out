@@ -1,0 +1,645 @@
+2025-10-29 06:56:53,714 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [6988]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 06:59:01,473 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [7057]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+2025-10-29 07:01:55,546 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [7286]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     2607:f140:400:3c:581:46d6:6277:f9bd:0 - "GET / HTTP/1.1" 404 Not Found
+INFO:     2607:f140:400:3c:581:46d6:6277:f9bd:0 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     2607:f140:400:3c:581:46d6:6277:f9bd:0 - "GET /docs HTTP/1.1" 200 OK
+INFO:     2607:f140:400:3c:581:46d6:6277:f9bd:0 - "GET /openapi.json HTTP/1.1" 200 OK
+2025-10-29 07:03:43,092 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 07:04:43,446 ERROR rag - health error
+Traceback (most recent call last):
+  File "src/oracledb/impl/thin/connection.pyx", line 414, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "src/oracledb/impl/thin/protocol.pyx", line 288, in oracledb.thin_impl.Protocol._connect_phase_one
+  File "src/oracledb/impl/thin/protocol.pyx", line 470, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 446, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages/connect.pyx", line 102, in oracledb.thin_impl.ConnectMessage.process
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/errors.py", line 199, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6000: Listener refused connection. (Similar to ORA-12506)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 352, in health
+    with pool.acquire() as conn:
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/pool.py", line 427, in acquire
+    return oracledb.connect(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/connection.py", line 1698, in connect
+    return conn_class(dsn=dsn, pool=pool, params=params, **kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/connection.py", line 889, in __init__
+    impl = pool_impl.acquire(params_impl)
+  File "src/oracledb/impl/thin/pool.pyx", line 629, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "src/oracledb/impl/thin/pool.pyx", line 635, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "src/oracledb/impl/thin/pool.pyx", line 631, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "/usr/lib64/python3.9/threading.py", line 348, in wait_for
+    result = predicate()
+  File "src/oracledb/impl/thin/pool.pyx", line 940, in oracledb.thin_impl.PooledConnRequest.fulfill
+  File "src/oracledb/impl/thin/pool.pyx", line 594, in oracledb.thin_impl.ThinPoolImpl._process_request
+  File "src/oracledb/impl/thin/pool.pyx", line 569, in oracledb.thin_impl.ThinPoolImpl._create_conn_impl
+  File "src/oracledb/impl/thin/connection.pyx", line 536, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/connection.pyx", line 532, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/connection.pyx", line 475, in oracledb.thin_impl.ThinConnImpl._connect_with_params
+  File "src/oracledb/impl/thin/connection.pyx", line 456, in oracledb.thin_impl.ThinConnImpl._connect_with_description
+  File "src/oracledb/impl/thin/connection.pyx", line 418, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/errors.py", line 199, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6005: cannot connect to database (CONNECTION_ID=pN8nDmnaZU0bNy6bv0QZMQ==).
+DPY-6000: Listener refused connection. (Similar to ORA-12506)
+INFO:     2607:f140:400:3c:581:46d6:6277:f9bd:0 - "GET /health HTTP/1.1" 500 Internal Server Error
+2025-10-29 09:10:33,290 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [9019]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 09:10:38,143 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 09:11:38,495 ERROR rag - health error
+Traceback (most recent call last):
+  File "src/oracledb/impl/thin/connection.pyx", line 414, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "src/oracledb/impl/thin/protocol.pyx", line 288, in oracledb.thin_impl.Protocol._connect_phase_one
+  File "src/oracledb/impl/thin/protocol.pyx", line 470, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 446, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages/connect.pyx", line 102, in oracledb.thin_impl.ConnectMessage.process
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/errors.py", line 199, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6000: Listener refused connection. (Similar to ORA-12506)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 352, in health
+    with pool.acquire() as conn:
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/pool.py", line 427, in acquire
+    return oracledb.connect(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/connection.py", line 1698, in connect
+    return conn_class(dsn=dsn, pool=pool, params=params, **kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/connection.py", line 889, in __init__
+    impl = pool_impl.acquire(params_impl)
+  File "src/oracledb/impl/thin/pool.pyx", line 629, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "src/oracledb/impl/thin/pool.pyx", line 635, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "src/oracledb/impl/thin/pool.pyx", line 631, in oracledb.thin_impl.ThinPoolImpl.acquire
+  File "/usr/lib64/python3.9/threading.py", line 348, in wait_for
+    result = predicate()
+  File "src/oracledb/impl/thin/pool.pyx", line 940, in oracledb.thin_impl.PooledConnRequest.fulfill
+  File "src/oracledb/impl/thin/pool.pyx", line 594, in oracledb.thin_impl.ThinPoolImpl._process_request
+  File "src/oracledb/impl/thin/pool.pyx", line 569, in oracledb.thin_impl.ThinPoolImpl._create_conn_impl
+  File "src/oracledb/impl/thin/connection.pyx", line 536, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/connection.pyx", line 532, in oracledb.thin_impl.ThinConnImpl.connect
+  File "src/oracledb/impl/thin/connection.pyx", line 475, in oracledb.thin_impl.ThinConnImpl._connect_with_params
+  File "src/oracledb/impl/thin/connection.pyx", line 456, in oracledb.thin_impl.ThinConnImpl._connect_with_description
+  File "src/oracledb/impl/thin/connection.pyx", line 418, in oracledb.thin_impl.ThinConnImpl._connect_with_address
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/errors.py", line 199, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.OperationalError: DPY-6005: cannot connect to database (CONNECTION_ID=/8OUC+Cxl9mCFZLyiPCzdw==).
+DPY-6000: Listener refused connection. (Similar to ORA-12506)
+INFO:     127.0.0.1:40112 - "GET /health HTTP/1.1" 500 Internal Server Error
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [9019]
+2025-10-29 09:12:28,443 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [9203]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 09:12:30,432 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+INFO:     127.0.0.1:57460 - "GET /health HTTP/1.1" 200 OK
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET / HTTP/1.1" 404 Not Found
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET /docs HTTP/1.1" 200 OK
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET /openapi.json HTTP/1.1" 200 OK
+2025-10-29 09:13:47,340 INFO oci.circuit_breaker - Default Auth client Circuit breaker strategy enabled
+2025-10-29 09:13:47,383 INFO oci.fips.281465860671088 - Using '/usr/lib64/libcrypto.so' for libcypto
+2025-10-29 09:13:47,383 INFO oci.fips.281465860671088 - FIPS mode is active
+2025-10-29 09:13:48,494 WARNING rag - vector search failed, falling back: ORA-00907: missing right parenthesis
+Help: https://docs.oracle.com/error-help/db/ora-00907/
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "POST /query HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 426, in query
+    cur.execute(KEYWORD_SEARCH_SQL, {"course": req.course, "pattern": pattern, "k": req.k})
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/cursor.py", line 844, in execute
+    impl.execute(self)
+  File "src/oracledb/impl/thin/cursor.pyx", line 277, in oracledb.thin_impl.ThinCursorImpl.execute
+  File "src/oracledb/impl/thin/protocol.pyx", line 501, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 502, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 494, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages/base.pyx", line 102, in oracledb.thin_impl.Message._check_and_raise_exception
+oracledb.exceptions.DatabaseError: ORA-00904: "ID": invalid identifier
+Help: https://docs.oracle.com/error-help/db/ora-00904/
+2025-10-29 09:17:50,275 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [9485]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [9203]
+2025-10-29 09:19:08,004 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [9709]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET / HTTP/1.1" 404 Not Found
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET /docs HTTP/1.1" 200 OK
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "GET /openapi.json HTTP/1.1" 200 OK
+2025-10-29 09:20:40,016 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 09:20:40,421 INFO oci.circuit_breaker - Default Auth client Circuit breaker strategy enabled
+2025-10-29 09:20:40,466 INFO oci.fips.281469809000800 - Using '/usr/lib64/libcrypto.so' for libcypto
+2025-10-29 09:20:40,466 INFO oci.fips.281469809000800 - FIPS mode is active
+INFO:     2601:644:680:f90:b5ae:5f33:bf59:b35b:0 - "POST /query HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 415, in query
+    qvec = embed([req.question])[0]
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 191, in embed
+    return real_embed(texts)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 184, in real_embed
+    return embedder.embed_documents(texts)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/langchain_community/embeddings/oci_generative_ai.py", line 218, in embed_documents
+    response = self.client.embed_text(invocation_obj)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oci/generative_ai_inference/generative_ai_inference_client.py", line 395, in embed_text
+    return retry_strategy.make_retrying_call(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oci/retry/retry.py", line 308, in make_retrying_call
+    response = func_ref(*func_args, **func_kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oci/base_client.py", line 539, in call_api
+    return self.request(request, allow_control_chars, operation_name, api_reference_link)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/circuitbreaker.py", line 146, in wrapper
+    return self.call(function, *args, **kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/circuitbreaker.py", line 188, in call
+    return func(*args, **kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oci/base_client.py", line 740, in request
+    self.raise_service_error(request, response, service_code, message, operation_name, api_reference_link, target_service, request_endpoint, client_version, timestamp, deserialized_data)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oci/base_client.py", line 905, in raise_service_error
+    raise exceptions.ServiceError(
+oci.exceptions.ServiceError: {'target_service': 'generative_ai_inference', 'status': 404, 'code': '404', 'opc-request-id': 'B40D8989BFF24F6599DBDE935367568F/996EBD1F7B0609A76FBD689C53FD2103/492F828FAEBAA00637EC4431CD7CA7E5', 'message': 'Authorization failed or requested resource not found.', 'operation_name': 'embed_text', 'timestamp': '2025-10-29T09:20:41.742799+00:00', 'client_version': 'Oracle-PythonSDK/2.161.1', 'request_endpoint': 'POST https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText', 'logging_tips': 'To get more info on the failing request, refer to https://docs.oracle.com/en-us/iaas/tools/python/latest/logging.html for ways to log the request/response details.', 'troubleshooting_tips': "See https://docs.oracle.com/iaas/Content/API/References/apierrors.htm#apierrors_404__404_404 for more information about resolving this error. Also see https://docs.oracle.com/iaas/api/#/en/generative-ai-inference/20231130/EmbedTextResult/EmbedText for details on this operation's requirements. If you are unable to resolve this generative_ai_inference issue, please contact Oracle support and provide them this full error message."}
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [9709]
+Traceback (most recent call last):
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 175, in <module>
+    import cohere
+ModuleNotFoundError: No module named 'cohere'
+2025-10-29 09:34:40,421 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [11601]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11601]
+2025-10-29 09:35:25,724 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [11723]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Shutting down
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 175
+    mport cohere
+          ^
+SyntaxError: invalid syntax
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [11723]
+2025-10-29 09:37:24,452 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [11953]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 18:48:14,679 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [14695]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 18:48:19,127 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+INFO:     127.0.0.1:36004 - "GET /health HTTP/1.1" 200 OK
+2025-10-29 18:48:30,712 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 404 Not Found"
+INFO:     127.0.0.1:47084 - "POST /ingest HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 380, in ingest
+    vecs = embed(chunks) if chunks else []
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 192, in embed
+    response = co.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 208, in embed
+    responses = [
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 208, in <listcomp>
+    responses = [
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 609, in result_iterator
+    yield fs.pop().result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 446, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+  File "/usr/lib64/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 211, in <lambda>
+    lambda text_batch: BaseCohere.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/base_client.py", line 1112, in embed
+    _response = self._raw_client.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/raw_base_client.py", line 1702, in embed
+    raise NotFoundError(
+cohere.errors.not_found_error.NotFoundError: headers: {'access-control-expose-headers': 'X-Debug-Trace-ID', 'cache-control': 'no-cache, no-store, no-transform, must-revalidate, private, max-age=0', 'content-encoding': 'gzip', 'content-type': 'application/json', 'expires': 'Thu, 01 Jan 1970 00:00:00 GMT', 'pragma': 'no-cache', 'vary': 'Origin,Accept-Encoding', 'x-accel-expires': '0', 'x-debug-trace-id': '8fffa674a52adc5767c4a67a030ead4c', 'x-endpoint-monthly-call-limit': '1000', 'x-trial-endpoint-call-limit': '100', 'x-trial-endpoint-call-remaining': '99', 'date': 'Wed, 29 Oct 2025 18:48:30 GMT', 'x-envoy-upstream-service-time': '27', 'server': 'envoy', 'via': '1.1 google', 'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000', 'transfer-encoding': 'chunked'}, status_code: 404, body: {'id': '2af5297b-9d3f-4125-ae10-89a6a89c1dd4', 'message': "model 'cohere.embed-english-v3.0' not found, make sure the correct model ID was used and that you have access to the model."}
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [14695]
+2025-10-29 18:50:00,260 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [14868]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 18:50:04,514 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 18:50:05,242 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:59940 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 18:50:27,932 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:45224 - "POST /query HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 450, in query
+    cur.execute("""
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/cursor.py", line 844, in execute
+    impl.execute(self)
+  File "src/oracledb/impl/thin/cursor.pyx", line 277, in oracledb.thin_impl.ThinCursorImpl.execute
+  File "src/oracledb/impl/thin/protocol.pyx", line 501, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 502, in oracledb.thin_impl.Protocol._process_single_message
+  File "src/oracledb/impl/thin/protocol.pyx", line 494, in oracledb.thin_impl.Protocol._process_message
+  File "src/oracledb/impl/thin/messages/base.pyx", line 102, in oracledb.thin_impl.Message._check_and_raise_exception
+oracledb.exceptions.DatabaseError: ORA-00904: "ID": invalid identifier
+Help: https://docs.oracle.com/error-help/db/ora-00904/
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [14868]
+2025-10-29 18:56:51,824 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [15819]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 18:56:56,754 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 18:56:57,518 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:43372 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 18:57:24,079 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:45336 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 18:58:54,512 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:32884 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 18:59:08,737 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:51572 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 18:59:26,705 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:54158 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 18:59:41,517 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:39372 - "POST /query HTTP/1.1" 200 OK
+Traceback (most recent call last):
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 181, in <module>
+    raise RuntimeError("COHERE_API_KEY environment variable must be set")
+RuntimeError: COHERE_API_KEY environment variable must be set
+2025-10-29 19:24:32,808 INFO rag - Starting RAG service (dsn=aitutordb_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [17245]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 19:24:39,219 INFO rag - Creating oracle pool (dsn=aitutordb_tp)
+INFO:     127.0.0.1:59498 - "POST /ingest HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 374, in ingest
+    pool = get_pool()
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 79, in get_pool
+    _pool = oracledb.create_pool(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/pool.py", line 622, in create_pool
+    return pool_class(dsn, params=params, cache_name=pool_alias, **kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/pool.py", line 73, in __init__
+    dsn = params_impl.process_args(dsn, kwargs, thin)
+  File "src/oracledb/impl/base/connect_params.pyx", line 574, in oracledb.base_impl.ConnectParamsImpl.process_args
+  File "src/oracledb/impl/base/connect_params.pyx", line 509, in oracledb.base_impl.ConnectParamsImpl.parse_connect_string
+  File "src/oracledb/impl/base/connect_params.pyx", line 507, in oracledb.base_impl.ConnectParamsImpl.parse_connect_string
+  File "src/oracledb/impl/base/connect_params.pyx", line 340, in oracledb.base_impl.ConnectParamsImpl._parse_connect_string
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/oracledb/errors.py", line 199, in _raise_err
+    raise error.exc_type(error) from cause
+oracledb.exceptions.DatabaseError: DPY-4000: unable to find "aitutordb_tp" in /home/alishaluc/wallet/tnsnames.ora
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17245]
+2025-10-29 19:26:46,233 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [17531]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 19:27:01,600 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 19:27:02,493 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 404 Not Found"
+INFO:     127.0.0.1:36014 - "POST /ingest HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 389, in app
+    raw_response = await run_endpoint_function(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 381, in ingest
+    vecs = embed(chunks) if chunks else []
+  File "/home/alishaluc/oracle_dss_fa25/ai_tutor/rag_service.py", line 192, in embed
+    response = co.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 208, in embed
+    responses = [
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 208, in <listcomp>
+    responses = [
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 609, in result_iterator
+    yield fs.pop().result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 446, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.9/concurrent/futures/_base.py", line 391, in __get_result
+    raise self._exception
+  File "/usr/lib64/python3.9/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/client.py", line 211, in <lambda>
+    lambda text_batch: BaseCohere.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/base_client.py", line 1112, in embed
+    _response = self._raw_client.embed(
+  File "/home/alishaluc/myvenv/lib64/python3.9/site-packages/cohere/raw_base_client.py", line 1702, in embed
+    raise NotFoundError(
+cohere.errors.not_found_error.NotFoundError: headers: {'access-control-expose-headers': 'X-Debug-Trace-ID', 'cache-control': 'no-cache, no-store, no-transform, must-revalidate, private, max-age=0', 'content-encoding': 'gzip', 'content-type': 'application/json', 'expires': 'Thu, 01 Jan 1970 00:00:00 GMT', 'pragma': 'no-cache', 'vary': 'Origin,Accept-Encoding', 'x-accel-expires': '0', 'x-debug-trace-id': '4e85ac8b402cf8db6c0b3adfd69a9d95', 'x-endpoint-monthly-call-limit': '1000', 'x-trial-endpoint-call-limit': '100', 'x-trial-endpoint-call-remaining': '99', 'date': 'Wed, 29 Oct 2025 19:27:02 GMT', 'x-envoy-upstream-service-time': '30', 'server': 'envoy', 'via': '1.1 google', 'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000', 'transfer-encoding': 'chunked'}, status_code: 404, body: {'id': 'ec17c075-9891-4913-a901-b01578b0f311', 'message': "model 'cohere.embed-english-v3.0' not found, make sure the correct model ID was used and that you have access to the model."}
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17531]
+2025-10-29 19:28:48,885 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [17660]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 19:28:52,174 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 19:28:53,059 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:52470 - "POST /ingest HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17660]
+2025-10-29 21:08:54,037 INFO rag - Starting RAG service (dsn=aitutordb1_tp, course=DATA100_FALL25, fake_embed=False)
+INFO:     Started server process [23860]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2025-10-29 21:09:13,633 INFO rag - Creating oracle pool (dsn=aitutordb1_tp)
+2025-10-29 21:09:14,498 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:41302 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 21:09:47,125 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:51360 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 21:10:06,809 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:58106 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 21:10:26,415 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:58156 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 21:10:45,507 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:41252 - "POST /ingest HTTP/1.1" 200 OK
+2025-10-29 21:11:35,866 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:55380 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 21:11:45,786 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:55384 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 21:11:49,190 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:51376 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 21:11:52,236 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:51392 - "POST /query HTTP/1.1" 200 OK
+2025-10-29 21:11:55,410 INFO httpx - HTTP Request: POST https://api.cohere.com/v1/embed "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:51396 - "POST /query HTTP/1.1" 200 OK
