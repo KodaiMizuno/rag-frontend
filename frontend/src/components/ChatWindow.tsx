@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, BookOpen, Sparkles, AlertCircle, Bot, User } from 'lucide-react';
-import ReactMarkdown from 'react-markdown'; // <--- The magic library
-import remarkGfm from 'remark-gfm';         // <--- Better list/table support
+import { Send, BookOpen, Sparkles, AlertCircle, Bot } from 'lucide-react';
+import ReactMarkdown from 'react-markdown'; 
+import remarkGfm from 'remark-gfm';         
 import { Message, MCQData } from '@/types';
 import { sendMessage, generateMCQ, checkAnswer } from '@/lib/api';
 import SourceCard from './SourceCard';
@@ -13,18 +13,23 @@ export default function ChatWindow() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  
+  // MCQ State
   const [mcq, setMcq] = useState<MCQData | null>(null);
   const [showMcqFeedback, setShowMcqFeedback] = useState<string | null>(null);
-  const [mcqAttempts, setMcqAttempts] = useState(0);
+  const [mcqAttempts, setMcqAttempts] = useState(0); 
+  // New state to control button visibility: only hide buttons on success
+  const [isCorrectlyAnswered, setIsCorrectlyAnswered] = useState(false); 
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll
+  // Auto-scroll logic
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, mcq]);
+  }, [messages, mcq, showMcqFeedback]);
 
-  // Load User ID
+  // Initialize or Load User ID
   useEffect(() => {
     const stored = localStorage.getItem('rag-tutor-user-id');
     if (stored) setUserId(stored);
@@ -48,13 +53,16 @@ export default function ChatWindow() {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
+    
+    // Reset MCQ state for the new turn
     setMcq(null);
     setShowMcqFeedback(null);
+    setIsCorrectlyAnswered(false);
 
     try {
       const response = await sendMessage(userMsg.content, userId || undefined);
       
-      // Update User ID if backend assigns one
+      // Update User ID if the backend assigns a new one
       if (response.user_id && response.user_id !== userId) {
         setUserId(response.user_id);
         localStorage.setItem('rag-tutor-user-id', response.user_id);
@@ -64,16 +72,20 @@ export default function ChatWindow() {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: response.answer,
-        sources: response.sources, // Now passing the full object array
+        sources: response.sources,
         timestamp: new Date(),
       };
 
       setMessages(prev => [...prev, assistantMsg]);
 
-      // Trigger MCQ
+      // Trigger MCQ generation if user exists
       if (response.user_id) {
         const quiz = await generateMCQ(response.user_id);
-        if (quiz.has_question) setMcq(quiz);
+        if (quiz.has_question) {
+          setMcq(quiz);
+          setMcqAttempts(0);
+          setIsCorrectlyAnswered(false);
+        }
       }
 
     } catch (error) {
@@ -86,32 +98,38 @@ export default function ChatWindow() {
       }]);
     } finally {
       setIsLoading(false);
+      // Focus input again for better UX
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
   };
 
   const handleMcqAnswer = async (answer: string) => {
-    // 1. Guard clauses: Don't run if data is missing
     if (!mcq || !userId) return;
     
-    // 2. Track attempts for scoring
+    // Prevent clicking again if already solved
+    if (isCorrectlyAnswered) return;
+
     setMcqAttempts(prev => prev + 1);
     const isFirstAttempt = mcqAttempts === 0;
 
     try {
-      // 3. Call the API to check the answer
       const result = await checkAnswer(userId, mcq.topic || '', answer, mcq.correct_answer || '', isFirstAttempt);
       
-      // 4. Handle success/failure
       if (result.is_correct) {
+        // SUCCESS CASE
+        setIsCorrectlyAnswered(true); // This triggers buttons to hide
         const masteryText = result.marked_mastered ? '\n\n🌟 **Marked as Mastered!**' : '';
         setShowMcqFeedback(`✅ **Correct!** ${mcq.explanation}${masteryText}`);
         
-        // 5. Close the quiz after 8 seconds so they can chat again
+        // Remove the quiz card after 8 seconds
         setTimeout(() => { 
             setMcq(null); 
-            setShowMcqFeedback(null); 
+            setShowMcqFeedback(null);
+            setIsCorrectlyAnswered(false);
         }, 8000);
       } else {
+        // FAILURE CASE - Do NOT set isCorrectlyAnswered(true)
+        // Buttons remain visible so they can try again
         setShowMcqFeedback('❌ **Incorrect.** Try again!');
       }
     } catch (error) {
@@ -129,8 +147,9 @@ export default function ChatWindow() {
           <BookOpen className="w-5 h-5 text-[#FDB515]" />
         </div>
         <div>
-          <h1 className="font-bold text-lg tracking-wide">Berkeley RAG Tutor</h1>
-          <p className="text-blue-200 text-xs uppercase tracking-wider font-semibold">CS Teaching Assistant</p>
+          {/* You can rename the Title here */}
+          <h1 className="font-bold text-lg tracking-wide">DSS RAG Tutor</h1>
+          <p className="text-blue-200 text-xs uppercase tracking-wider font-semibold">Data Science Teaching Assistant</p>
         </div>
       </div>
 
@@ -147,7 +166,6 @@ export default function ChatWindow() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             
-            {/* Avatar */}
             <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2 ${
               msg.role === 'assistant' ? 'bg-[#003262] text-white' : 'hidden'
             }`}>
@@ -160,14 +178,10 @@ export default function ChatWindow() {
                 : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
             }`}>
               
-              {/* MARKDOWN CONTENT */}
               <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.content}
-                </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
               </div>
 
-              {/* Sources */}
               {msg.role === 'assistant' && msg.sources && msg.sources.length > 0 && (
                 <SourceCard sources={msg.sources} />
               )}
@@ -179,7 +193,6 @@ export default function ChatWindow() {
           </div>
         ))}
 
-        {/* Loading Indicator */}
         {isLoading && (
           <div className="flex justify-start items-center gap-2 ml-10">
             <div className="flex space-x-1">
@@ -190,10 +203,9 @@ export default function ChatWindow() {
           </div>
         )}
 
-        {/* MCQ Section */}
+        {/* --- IMPROVED MCQ SECTION --- */}
         {mcq && mcq.has_question && (
            <div className="ml-10 max-w-[85%] bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-sm relative overflow-hidden mt-4">
-             {/* Decorative side bar */}
              <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
              
              <div className="flex items-center gap-2 mb-3">
@@ -201,28 +213,31 @@ export default function ChatWindow() {
                <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
              </div>
              
-             {/* FIX 1: Use ReactMarkdown here so it doesn't show raw **text** */}
+             {/* Question Text (Markdown Enabled) */}
              <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {mcq.question_text || ''}
                 </ReactMarkdown>
              </div>
              
-             {showMcqFeedback ? (
-               <div className={`p-3 rounded-lg text-sm font-medium border ${
+             {/* Feedback Message (Markdown Enabled for Bold Text) */}
+             {showMcqFeedback && (
+               <div className={`mb-4 p-3 rounded-lg text-sm border ${
                  showMcqFeedback.includes('Correct') 
                     ? 'bg-green-50 text-green-800 border-green-200' 
                     : 'bg-red-50 text-red-800 border-red-200'
                }`}>
-                 {showMcqFeedback}
+                 <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
                </div>
-             ) : (
+             )}
+
+             {/* Buttons (Only hide if CORRECT answer was given) */}
+             {!isCorrectlyAnswered && (
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                  {['A', 'B', 'C', 'D'].map((opt) => (
                    <button 
                     key={opt}
-                    // FIX 2: Restored the click handler!
-                    onClick={() => handleMcqAnswer(opt)} 
+                    onClick={() => handleMcqAnswer(opt)}
                     className="px-4 py-3 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 text-amber-900 font-semibold transition-all shadow-sm text-left flex items-center gap-2 group"
                    >
                      <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs group-hover:bg-amber-200">
@@ -243,6 +258,7 @@ export default function ChatWindow() {
       <div className="p-4 bg-white border-t border-gray-100">
         <div className="flex gap-2 relative">
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
