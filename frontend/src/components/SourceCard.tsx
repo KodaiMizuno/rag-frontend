@@ -1,52 +1,103 @@
 'use client';
 
-import { FileText } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, ChevronDown, ChevronUp } from 'lucide-react';
 
-// FIX 1: Updated interface to match your current backend data (list of strings)
+// Updated interface to match rich source data from backend
+interface Source {
+  filename: string;
+  title: string;
+  course_id?: string;
+  chunk_id?: number;
+  page_number?: number;
+  snippet: string;
+  relevance_score: number;
+}
+
 interface SourceCardProps {
-  sources: string[];
+  sources: Source[];
 }
 
 export default function SourceCard({ sources }: SourceCardProps) {
-  // We removed the 'expanded' state because we don't have snippets to expand yet.
-  
+  const [expanded, setExpanded] = useState<string | null>(null);
+
   if (!sources || sources.length === 0) return null;
+
+  // Deduplicate sources by filename, keeping highest relevance
+  const uniqueSources = sources.reduce((acc, src) => {
+    const key = src.filename;
+    if (!acc[key] || src.relevance_score > acc[key].relevance_score) {
+      acc[key] = src;
+    }
+    return acc;
+  }, {} as Record<string, Source>);
+
+  const sourceList = Object.values(uniqueSources);
 
   return (
     <div className="mt-4 border-t border-gray-200 pt-3">
       <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
         <FileText className="w-3 h-3" />
-        Sources ({sources.length})
+        Sources ({sourceList.length})
       </p>
-      
+
       <div className="space-y-2">
-        {sources.map((sourcePath, idx) => {
-          // Logic: Extract just the filename from the full path
-          // e.g., "data/pdfs/lecture1.pdf" -> "lecture1.pdf"
-          const title = sourcePath.includes('/') ? sourcePath.split('/').pop() : sourcePath;
+        {sourceList.map((source, idx) => {
+          const isExpanded = expanded === `${source.filename}-${idx}`;
+          const relevancePercent = Math.round(source.relevance_score * 100);
 
           return (
             <div
-              key={`${title}-${idx}`}
+              key={`${source.filename}-${idx}`}
               className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
             >
-              {/* Card Header */}
-              <div className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-100 transition-colors">
-                <div className="flex items-center gap-2 text-left">
+              {/* Header - Always visible */}
+              <button
+                onClick={() => setExpanded(isExpanded ? null : `${source.filename}-${idx}`)}
+                className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-100 transition-colors text-left"
+              >
+                <div className="flex items-center gap-2">
                   <div className="p-1 bg-blue-100 rounded">
                     <FileText className="w-3 h-3 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{title}</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {source.title || source.filename}
+                    </p>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
-                       {/* Optional: Add a static tag since we know these are documents */}
-                       <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">
-                        Document
+                      {source.course_id && (
+                        <span className="bg-berkeley-blue/10 text-berkeley-blue px-1.5 py-0.5 rounded">
+                          {source.course_id}
+                        </span>
+                      )}
+                      {source.page_number && (
+                        <span>Page {source.page_number}</span>
+                      )}
+                      <span className="text-gray-400">
+                        {relevancePercent}% match
                       </span>
                     </div>
                   </div>
                 </div>
-              </div>
+
+                {source.snippet && (
+                  isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  )
+                )}
+              </button>
+
+              {/* Expanded content - Snippet */}
+              {isExpanded && source.snippet && (
+                <div className="px-3 py-2 bg-white border-t border-gray-200">
+                  <p className="text-xs text-gray-500 mb-1">Relevant excerpt:</p>
+                  <p className="text-sm text-gray-700 italic leading-relaxed">
+                    &ldquo;{source.snippet}&rdquo;
+                  </p>
+                </div>
+              )}
             </div>
           );
         })}
