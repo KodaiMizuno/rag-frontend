@@ -1,42 +1,29 @@
-# === Python ===
+# Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
 *.so
-*.egg-info/
-.eggs/
-*.log
-*.sqlite3
-
-# === Environments ===
-.env
+.Python
 venv/
-.env/
-myenv*/
-.venv/
-.ipynb_checkpoints
+env/
+.env
+*.log
 
-myenv/
+# Wallet (don't commit secrets!)
+wallet_dir/
+wallet.tar.gz
+wallet_base64.txt
 
-# === Compiled / build files ===
-build/
-dist/
-*.egg
-*.manifest
-*.spec
+# Data files
+data/raw_pdfs/
+data/*.txt
 
-# === OS / Editor ===
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+
+# OS
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
-
-# === Jupyter / Notebooks ===
-*.ipynb_checkpoints
-*.ipynb_autosave
-
-# === Cache ===
-__pycache__/
-.cache/
-.pytest_cache/
