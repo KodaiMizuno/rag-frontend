@@ -1,12 +1,26 @@
+# Core ML/Data
 numpy==1.26.4
 scikit-learn==1.5.2
-oracledb==2.4.1
-cohere==5.11.3
-python-dotenv==1.0.1
-pypdf
-fastapi==0.109.0
-uvicorn==0.27.0
 
-pydantic
-PyJWT
-python-multipart
+# Oracle Database
+oracledb==2.4.1
+
+# AI/LLM
+cohere==5.11.3
+
+# PDF Processing
+pypdf==3.17.4
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# Authentication
+PyJWT==2.8.0
+
+# File Upload
+python-multipart==0.0.9
+
+# Environment
+python-dotenv==1.0.1

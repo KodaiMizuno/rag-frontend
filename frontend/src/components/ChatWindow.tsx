@@ -15,6 +15,7 @@ export default function ChatWindow() {
   const [userId, setUserId] = useState<string | null>(null);
   const [mcq, setMcq] = useState<MCQData | null>(null);
   const [showMcqFeedback, setShowMcqFeedback] = useState<string | null>(null);
+  const [mcqAttempts, setMcqAttempts] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +86,37 @@ export default function ChatWindow() {
       }]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleMcqAnswer = async (answer: string) => {
+    // 1. Guard clauses: Don't run if data is missing
+    if (!mcq || !userId) return;
+    
+    // 2. Track attempts for scoring
+    setMcqAttempts(prev => prev + 1);
+    const isFirstAttempt = mcqAttempts === 0;
+
+    try {
+      // 3. Call the API to check the answer
+      const result = await checkAnswer(userId, mcq.topic || '', answer, mcq.correct_answer || '', isFirstAttempt);
+      
+      // 4. Handle success/failure
+      if (result.is_correct) {
+        const masteryText = result.marked_mastered ? '\n\n🌟 **Marked as Mastered!**' : '';
+        setShowMcqFeedback(`✅ **Correct!** ${mcq.explanation}${masteryText}`);
+        
+        // 5. Close the quiz after 8 seconds so they can chat again
+        setTimeout(() => { 
+            setMcq(null); 
+            setShowMcqFeedback(null); 
+        }, 8000);
+      } else {
+        setShowMcqFeedback('❌ **Incorrect.** Try again!');
+      }
+    } catch (error) {
+      console.error('Error checking answer:', error);
+      setShowMcqFeedback('⚠️ Error checking answer. Try again.');
     }
   };
 
@@ -160,31 +192,43 @@ export default function ChatWindow() {
 
         {/* MCQ Section */}
         {mcq && mcq.has_question && (
-           <div className="ml-10 max-w-[85%] bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-sm relative overflow-hidden">
+           <div className="ml-10 max-w-[85%] bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-sm relative overflow-hidden mt-4">
+             {/* Decorative side bar */}
              <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+             
              <div className="flex items-center gap-2 mb-3">
                <AlertCircle className="w-5 h-5 text-amber-600" />
                <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
              </div>
              
-             <p className="text-gray-800 font-medium mb-4">{mcq.question_text}</p>
+             {/* FIX 1: Use ReactMarkdown here so it doesn't show raw **text** */}
+             <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {mcq.question_text || ''}
+                </ReactMarkdown>
+             </div>
              
              {showMcqFeedback ? (
-               <div className={`p-3 rounded-lg text-sm font-medium ${
-                 showMcqFeedback.includes('Correct') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+               <div className={`p-3 rounded-lg text-sm font-medium border ${
+                 showMcqFeedback.includes('Correct') 
+                    ? 'bg-green-50 text-green-800 border-green-200' 
+                    : 'bg-red-50 text-red-800 border-red-200'
                }`}>
                  {showMcqFeedback}
                </div>
              ) : (
-               <div className="grid grid-cols-2 gap-2">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                  {['A', 'B', 'C', 'D'].map((opt) => (
                    <button 
                     key={opt}
-                    // In a real app, you'd want to pass the checkAnswer logic here
-                    // ensuring you import it or define it in the component
-                    className="px-4 py-2 bg-white border border-amber-300 rounded-md hover:bg-amber-100 text-amber-900 font-medium transition-colors text-sm"
+                    // FIX 2: Restored the click handler!
+                    onClick={() => handleMcqAnswer(opt)} 
+                    className="px-4 py-3 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 text-amber-900 font-semibold transition-all shadow-sm text-left flex items-center gap-2 group"
                    >
-                     Option {opt}
+                     <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs group-hover:bg-amber-200">
+                        {opt}
+                     </span>
+                     <span>Option {opt}</span>
                    </button>
                  ))}
                </div>
