@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, BookOpen, Sparkles, AlertCircle } from 'lucide-react';
 import { Message, MCQData } from '@/types';
 import { sendMessage, generateMCQ, checkAnswer } from '@/lib/api';
+import SourceCard from './SourceCard'; // <--- Added Import
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -132,21 +133,21 @@ export default function ChatWindow() {
 
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
               message.role === 'user'
                 ? 'bg-berkeley-blue text-white rounded-br-md'
                 : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-md'
             }`}>
               <p className="whitespace-pre-wrap">{message.content}</p>
-              {message.sources && message.sources.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <p className="text-xs text-gray-500 font-medium mb-1">Sources:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {message.sources.map((source, idx) => (
-                      <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">{source}</span>
-                    ))}
-                  </div>
-                </div>
+              
+              {/* Timestamp */}
+              <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-blue-200' : 'text-gray-400'}`}>
+                {new Date(message.timestamp).toLocaleString()}
+              </p>
+
+              {/* Rich Sources Integration */}
+              {message.role === 'assistant' && message.sources && (
+                <SourceCard sources={message.sources} />
               )}
             </div>
           </div>
