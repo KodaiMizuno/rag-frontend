@@ -871,44 +871,4 @@ async def new_session():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-```
-
----
-
-## Summary of Endpoints
-
-| Endpoint | Method | Auth | Description |
-|----------|--------|------|-------------|
-| `/health` | GET | ❌ | Health check |
-| `/auth/register` | POST | ❌ | Register new user |
-| `/auth/login` | POST | ❌ | Login |
-| `/auth/me` | GET | ✅ | Get current user |
-| `/chat` | POST | ❌ | Legacy chat (no auth) |
-| `/chats` | GET | ✅ | Get chat history |
-| `/chats` | POST | ✅ | Send message (creates chat) |
-| `/chats/{id}` | DELETE | ✅ | Delete chat |
-| `/chats/{id}/messages` | GET | ✅ | Get chat messages |
-| `/mcq/generate` | POST | Optional | Generate MCQ |
-| `/mcq/check` | POST | Optional | Check answer |
-| `/documents/upload` | POST | 🎓 Teacher | Upload document |
-| `/documents` | GET | 🎓 Teacher | List documents |
-| `/documents/{id}` | DELETE | 🎓 Teacher | Delete document |
-| `/dashboard/overview` | GET | 🎓 Teacher | Stats overview |
-| `/dashboard/students` | GET | 🎓 Teacher | Student list |
-| `/dashboard/popular-topics` | GET | 🎓 Teacher | Top questions |
-
----
-
-## Required: Update `requirements.txt`
-```
-fastapi
-uvicorn
-python-dotenv
-pydantic
-cohere
-oracledb
-numpy
-scikit-learn
-pypdf
-PyJWT
-python-multipart
+    
