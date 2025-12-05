@@ -1,136 +1,256 @@
+"""
+Database Manager for RAG Tutor
+Handles user queries, mastery tracking, and guest session cleanup
+"""
+
 import os
-import oracledb
-import uuid
 import hashlib
-from pathlib import Path
-import array
+import oracledb
 
 class DatabaseManager:
     def __init__(self):
-        self.user = os.getenv("ADB_USER")
-        self.password = os.getenv("ADB_PASSWORD")
-        self.dsn = os.getenv("ADB_CONNECT_STR")
-        self.wallet_dir = os.getenv("ADB_WALLET_PATH")
-        self.wallet_pwd = os.getenv("ADB_WALLET_PASSWORD")
         self.conn = None
-
-    def connect(self):
-        print("🔌 Connecting to TutorDatabase...")
-        self.conn = oracledb.connect(
-            user=self.user,
-            password=self.password,
-            dsn=self.dsn,
-            config_dir=self.wallet_dir,
-            wallet_location=self.wallet_dir,
-            wallet_password=self.wallet_pwd,
-            ssl_server_dn_match=True
-        )
-        return self.conn
-
-    def get_session_user_id(self, reset_user=False):
-        user_id_path = Path("data/session_user_id.txt")
-        user_id_path.parent.mkdir(parents=True, exist_ok=True)
-
-        if reset_user and user_id_path.exists():
-            old_id = user_id_path.read_text().strip()
-            # Optional: Add logic here to delete old records if needed
-            user_id_path.unlink()
-            print(f"♻️ Reset user session (Old: {old_id})")
-
-        if user_id_path.exists():
-            return user_id_path.read_text().strip()
-
-        new_id = str(uuid.uuid4())
-        user_id_path.write_text(new_id)
         
-        # Log start
+    def connect(self):
+        """Connect to Oracle Autonomous Database."""
+        wallet_path = os.getenv("ADB_WALLET_PATH", "wallet_dir")
+        
+        self.conn = oracledb.connect(
+            user=os.getenv("ADB_USER"),
+            password=os.getenv("ADB_PASSWORD"),
+            dsn=os.getenv("ADB_CONNECT_STR"),
+            config_dir=wallet_path,
+            wallet_location=wallet_path,
+            wallet_password=os.getenv("ADB_WALLET_PASSWORD")
+        )
+        print("✅ Connected to Oracle Autonomous Database!")
+        
+        # Ensure tables exist
+        self._create_tables_if_needed()
+        
+        return self.conn
+    
+    def _create_tables_if_needed(self):
+        """Create USER_QUERIES table if it doesn't exist."""
+        create_sql = """
+        BEGIN
+            EXECUTE IMMEDIATE '
+                CREATE TABLE USER_QUERIES (
+                    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                    user_id VARCHAR2(100) NOT NULL,
+                    query_text CLOB NOT NULL,
+                    query_hash VARCHAR2(64) NOT NULL,
+                    answered_correctly VARCHAR2(1) DEFAULT ''N'',
+                    is_guest VARCHAR2(1) DEFAULT ''N'',
+                    timestamp TIMESTAMP DEFAULT SYSTIMESTAMP
+                )
+            ';
+        EXCEPTION
+            WHEN OTHERS THEN
+                IF SQLCODE != -955 THEN
+                    RAISE;
+                END IF;
+        END;
+        """
+        
+        # Create index for faster lookups
+        index_sql = """
+        BEGIN
+            EXECUTE IMMEDIATE 'CREATE INDEX idx_user_queries_user_id ON USER_QUERIES(user_id)';
+        EXCEPTION
+            WHEN OTHERS THEN
+                IF SQLCODE != -955 THEN
+                    RAISE;
+                END IF;
+        END;
+        """
+        
         with self.conn.cursor() as cur:
             try:
-                cur.execute(
-                    "INSERT INTO USER_QUERIES (user_id, query_text, timestamp) VALUES (:1, 'SESSION_START', SYSTIMESTAMP)",
-                    [new_id]
-                )
+                cur.execute(create_sql)
+                cur.execute(index_sql)
                 self.conn.commit()
             except Exception as e:
-                print(f"⚠️ Warning: Could not log session start: {e}")
+                print(f"Note: Table setup - {e}")
+    
+    def log_query(self, user_id: str, query_text: str, is_guest: bool = False):
+        """
+        Log a user's question for future MCQ generation.
         
-        return new_id
-
-    def log_query(self, user_id, query_text, correct='N'):
-        query_hash = hashlib.sha256(query_text.encode("utf-8")).hexdigest()[:64]
+        Args:
+            user_id: Unique identifier for the user
+            query_text: The question they asked
+            is_guest: Whether this is a guest (temporary) session
+        """
+        # Create hash to check for duplicates
+        query_hash = hashlib.sha256(query_text.lower().strip().encode()).hexdigest()
+        guest_flag = 'Y' if is_guest else 'N'
+        
         with self.conn.cursor() as cur:
-            # FIX: Use positional :1, :2, :3, :4 binds to avoid reserved words
+            # Check if this exact question was already asked by this user
             cur.execute("""
-                MERGE INTO USER_QUERIES u
-                USING (SELECT :1 AS user_id, :2 AS query_hash, :3 AS query_text FROM dual) s
-                ON (u.user_id = s.user_id AND u.query_hash = s.query_hash)
-                WHEN NOT MATCHED THEN
-                    INSERT (user_id, query_text, query_hash, answered_correctly)
-                    VALUES (s.user_id, s.query_text, s.query_hash, :4)
-            """, [user_id, query_hash, query_text, correct])
-            self.conn.commit()
-
-    def get_random_past_query(self, user_id):
+                SELECT COUNT(*) FROM USER_QUERIES 
+                WHERE user_id = :1 AND query_hash = :2
+            """, [user_id, query_hash])
+            
+            if cur.fetchone()[0] == 0:
+                # New question - insert it
+                cur.execute("""
+                    INSERT INTO USER_QUERIES (user_id, query_text, query_hash, is_guest)
+                    VALUES (:1, :2, :3, :4)
+                """, [user_id, query_text, query_hash, guest_flag])
+                self.conn.commit()
+                print(f"📝 Logged query for user {user_id[:8]}...")
+            else:
+                print(f"ℹ️ Query already exists for user {user_id[:8]}...")
+    
+    def get_random_past_query(self, user_id: str) -> str:
+        """
+        Get a random past question from THIS USER ONLY that hasn't been mastered.
+        
+        Args:
+            user_id: The specific user's ID
+            
+        Returns:
+            A random question string, or None if no questions available
+        """
         with self.conn.cursor() as cur:
-            # FIX: Use DBMS_LOB.SUBSTR to safely compare CLOB data
+            # Get random unmastered query FOR THIS SPECIFIC USER
             cur.execute("""
-                SELECT query_text FROM USER_QUERIES
-                WHERE user_id = :1 
-                AND answered_correctly = 'N' 
-                AND DBMS_LOB.SUBSTR(query_text, 13, 1) != 'SESSION_START'
-                ORDER BY DBMS_RANDOM.VALUE FETCH FIRST 1 ROWS ONLY
+                SELECT query_text FROM (
+                    SELECT query_text 
+                    FROM USER_QUERIES 
+                    WHERE user_id = :1 
+                    AND answered_correctly = 'N'
+                    ORDER BY DBMS_RANDOM.VALUE
+                )
+                WHERE ROWNUM = 1
             """, [user_id])
+            
             row = cur.fetchone()
+            if row:
+                text = row[0]
+                # Handle CLOB
+                if hasattr(text, 'read'):
+                    text = text.read()
+                return text
+            return None
+    
+    def mark_correct(self, user_id: str, query_text: str):
+        """
+        Mark a question as mastered for THIS USER.
         
-        if row:
-            # Handle CLOB if returned as LOB object
-            text = row[0]
-            return text.read() if hasattr(text, 'read') else text
-        return None
-
-    def mark_correct(self, user_id, query_text):
-        # Hash the query text to find the specific record
-        query_hash = hashlib.sha256(query_text.encode("utf-8")).hexdigest()[:64]
+        Args:
+            user_id: The specific user's ID
+            query_text: The question that was answered correctly
+        """
+        query_hash = hashlib.sha256(query_text.lower().strip().encode()).hexdigest()
         
         with self.conn.cursor() as cur:
-            # FIX: Use :1 and :2 instead of named variables
             cur.execute("""
                 UPDATE USER_QUERIES 
-                SET answered_correctly = 'Y', timestamp = SYSTIMESTAMP
+                SET answered_correctly = 'Y' 
                 WHERE user_id = :1 AND query_hash = :2
             """, [user_id, query_hash])
             self.conn.commit()
-
-    def clear_table(self, table_name):
-        """Wipes all data from the table to start fresh."""
+            print(f"✅ Marked as mastered for user {user_id[:8]}...")
+    
+    def get_user_stats(self, user_id: str) -> dict:
+        """
+        Get statistics for a specific user.
+        
+        Args:
+            user_id: The user's ID
+            
+        Returns:
+            Dict with total_questions and mastered_topics counts
+        """
         with self.conn.cursor() as cur:
-            try:
-                print(f"🧹 Clearing table {table_name}...")
-                cur.execute(f"DELETE FROM {table_name}")
-                self.conn.commit()
-                print("✅ Table cleared.")
-            except Exception as e:
-                print(f"⚠️ Error clearing table: {e}")
-
-    def insert_chunks(self, chunks, embeddings, filename, table_name="DOC_CHUNKS_V4"):
+            # Total questions asked by this user
+            cur.execute("""
+                SELECT COUNT(*) FROM USER_QUERIES WHERE user_id = :1
+            """, [user_id])
+            total = cur.fetchone()[0]
+            
+            # Mastered topics for this user
+            cur.execute("""
+                SELECT COUNT(*) FROM USER_QUERIES 
+                WHERE user_id = :1 AND answered_correctly = 'Y'
+            """, [user_id])
+            mastered = cur.fetchone()[0]
+            
+            return {
+                "total_questions": total,
+                "mastered_topics": mastered
+            }
+    
+    def cleanup_guest_sessions(self, guest_user_id: str = None):
         """
-        Batch inserts text chunks and vector embeddings into the DB.
+        Delete guest session data.
+        
+        Args:
+            guest_user_id: Specific guest ID to clean up.
+                          If None, cleans up ALL guest data.
         """
+        with self.conn.cursor() as cur:
+            if guest_user_id:
+                # Delete specific guest's data
+                cur.execute("""
+                    DELETE FROM USER_QUERIES 
+                    WHERE user_id = :1 AND is_guest = 'Y'
+                """, [guest_user_id])
+                deleted = cur.rowcount
+                print(f"🧹 Cleaned up {deleted} queries for guest {guest_user_id[:8]}...")
+            else:
+                # Delete all guest data older than 24 hours
+                cur.execute("""
+                    DELETE FROM USER_QUERIES 
+                    WHERE is_guest = 'Y' 
+                    AND timestamp < SYSTIMESTAMP - INTERVAL '24' HOUR
+                """)
+                deleted = cur.rowcount
+                print(f"🧹 Cleaned up {deleted} old guest queries...")
+            
+            self.conn.commit()
+    
+    def cleanup_old_guest_data(self):
+        """
+        Scheduled cleanup: Remove guest data older than 24 hours.
+        Call this periodically (e.g., daily cron job).
+        """
+        with self.conn.cursor() as cur:
+            cur.execute("""
+                DELETE FROM USER_QUERIES 
+                WHERE is_guest = 'Y' 
+                AND timestamp < SYSTIMESTAMP - INTERVAL '24' HOUR
+            """)
+            deleted = cur.rowcount
+            self.conn.commit()
+            print(f"🧹 Scheduled cleanup: Removed {deleted} old guest queries")
+            return deleted
+    
+    # ============== VECTOR DB METHODS ==============
+    
+    def insert_chunks(self, chunks, embeddings, source, table_name="DOC_CHUNKS_V4"):
+        """Insert document chunks with embeddings."""
+        import array
+        
         print(f"💾 Inserting {len(chunks)} chunks into {table_name}...")
         
         with self.conn.cursor() as cur:
             data = []
-            for i, (text, vec) in enumerate(zip(chunks, embeddings)):
-                metadata = f'{{"source": "{filename}", "chunk_id": {i}}}'
+            for chunk_data, vec in zip(chunks, embeddings):
+                # Handle both dict format and string format
+                if isinstance(chunk_data, dict):
+                    text = chunk_data["text"]
+                    metadata = chunk_data.get("metadata", source)
+                else:
+                    text = chunk_data
+                    metadata = source
                 
-                # --- FIX: Convert list to array.array ---
-                # This tells Oracle "This is a VECTOR, not a list of parameters"
-                # 'f' stands for float (32-bit), which matches Cohere/Oracle types
                 vec_array = array.array('f', vec)
-                
                 data.append((text, vec_array, metadata))
 
-            # Bulk insert
             try:
                 cur.executemany(f"""
                     INSERT INTO {table_name} (chunk_text, embedding, metadata)
@@ -140,3 +260,33 @@ class DatabaseManager:
                 print("✅ Upload complete!")
             except Exception as e:
                 print(f"❌ Error inserting data: {e}")
+    
+    def clear_table(self, table_name):
+        """Clear all data from a table."""
+        with self.conn.cursor() as cur:
+            cur.execute(f"DELETE FROM {table_name}")
+            self.conn.commit()
+            print(f"🗑️ Cleared all data from {table_name}")
+    
+    def get_session_user_id(self, reset_user=False):
+        """Get or create a persistent user ID (for CLI usage)."""
+        id_file = "data/session_user_id.txt"
+        
+        if reset_user:
+            import uuid
+            new_id = str(uuid.uuid4())
+            os.makedirs("data", exist_ok=True)
+            with open(id_file, "w") as f:
+                f.write(new_id)
+            return new_id
+        
+        if os.path.exists(id_file):
+            with open(id_file, "r") as f:
+                return f.read().strip()
+        else:
+            import uuid
+            new_id = str(uuid.uuid4())
+            os.makedirs("data", exist_ok=True)
+            with open(id_file, "w") as f:
+                f.write(new_id)
+            return new_id

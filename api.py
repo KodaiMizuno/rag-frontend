@@ -111,6 +111,8 @@ class ChatMessage(BaseModel):
 class LegacyChatRequest(BaseModel):
     question: str
     user_id: Optional[str] = None
+    
+
 
 class LegacyChatResponse(BaseModel):
     answer: str
@@ -550,7 +552,7 @@ async def create_chat_and_message(request: ChatRequest, user: dict = Depends(ver
         db.conn.commit()
     
     # Log for MCQ
-    db.log_query(user_id, request.message)
+    db.log_query(user_id, request.message, is_guest=False)
     
     return ChatResponse(
         answer=answer,
@@ -589,7 +591,7 @@ async def legacy_chat(request: LegacyChatRequest):
         context, raw_sources = rag.search(request.question)
         sources = format_sources(raw_sources)
         answer = rag.get_tutor_hint(request.question, context)
-        db.log_query(user_id, request.question)
+        db.log_query(user_id, request.question, is_guest=True)
         
         return LegacyChatResponse(
             answer=answer,
@@ -858,6 +860,13 @@ async def get_popular_topics(user: dict = Depends(require_teacher)):
         })
     
     return topics
+
+@app.post("/session/cleanup")
+async def cleanup_guest_session(user_id: str = None):
+    """Clean up guest session data when they leave"""
+    if user_id:
+        db.cleanup_guest_sessions(user_id)
+    return {"message": "Cleaned up"}
 
 # ============== SESSION ==============
 
