@@ -37,6 +37,7 @@ import oracledb
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Body
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 #from langchain_community.embeddings.oci_generative_ai import OCIGenAIEmbeddings
@@ -66,6 +67,15 @@ EMBED_MODEL_ID = os.environ.get("EMBED_MODEL_ID", "cohere.embed-english-v3.0")
 
 # -------- FastAPI --------
 app = FastAPI(title="RAG Service", version="0.1.0")
+
+# CORS - allow frontend to call this backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Serve static frontend assets
 FRONTEND_DIR = Path(__file__).parent / "frontend"
@@ -436,31 +446,28 @@ async def ingest(file: UploadFile = File(...), course: str = Form(default=COURSE
     return IngestResponse(file=file.filename, chunks=len(chunks), inserted=inserted)
 
 
-"""@app.post("/query", response_model=QueryResponse)
-async def query(req: QueryRequest):
-    pool = get_pool()
-    with pool.acquire() as conn:
-        with conn.cursor() as cur:
-            hits: List[QueryHit] = []
-            # Try vector first
-            try:
-                qvec = embed([req.question], is_query=True)[0]
-                cur.execute(VECTOR_SEARCH_SQL, {"qvec": qvec, "course": req.course, "k": req.k})
-                rows = cur.fetchall()
-                for id_, src, score, prev in rows:
-                    hits.append(QueryHit(id=id_, source_uri=src, score=float(score), preview=str(prev)))
-            except oracledb.Error as e:
-                log.warning("vector search failed, falling back: %s", e)
-
-            if not hits:
-                # crude keyword fallback
-                pattern = re.sub(r"\W+", "|", req.question).strip("|") or req.question
-                cur.execute(KEYWORD_SEARCH_SQL, {"course": req.course, "pattern": pattern, "k": req.k})
-                rows = cur.fetchall()
-                for id_, src, score, prev in rows:
-                    hits.append(QueryHit(id=id_, source_uri=src, score=float(score), preview=str(prev)))
-
-    return QueryResponse(hits=hits)"""
+# Old query implementation (replaced with manual cosine similarity version below):
+# @app.post("/query", response_model=QueryResponse)
+# async def query(req: QueryRequest):
+#     pool = get_pool()
+#     with pool.acquire() as conn:
+#         with conn.cursor() as cur:
+#             hits: List[QueryHit] = []
+#             try:
+#                 qvec = embed([req.question], is_query=True)[0]
+#                 cur.execute(VECTOR_SEARCH_SQL, {"qvec": qvec, "course": req.course, "k": req.k})
+#                 rows = cur.fetchall()
+#                 for id_, src, score, prev in rows:
+#                     hits.append(QueryHit(id=id_, source_uri=src, score=float(score), preview=str(prev)))
+#             except oracledb.Error as e:
+#                 log.warning("vector search failed, falling back: %s", e)
+#             if not hits:
+#                 pattern = re.sub(r"\W+", "|", req.question).strip("|") or req.question
+#                 cur.execute(KEYWORD_SEARCH_SQL, {"course": req.course, "pattern": pattern, "k": req.k})
+#                 rows = cur.fetchall()
+#                 for id_, src, score, prev in rows:
+#                     hits.append(QueryHit(id=id_, source_uri=src, score=float(score), preview=str(prev)))
+#     return QueryResponse(hits=hits)
 
 @app.post("/query", response_model=QueryResponse)
 async def query(req: QueryRequest):
@@ -501,14 +508,13 @@ async def query(req: QueryRequest):
             return QueryResponse(hits=top_hits)
 
 
-"""@app.post("/answer", response_model=AnswerResponse)
-async def answer(req: QueryRequest):
-    # Retrieve
-    qr = await query(req)
-    # Simple stub "LLM": extract sentences that seem relevant
-    context = "\n\n".join(h.preview for h in qr.hits)
-    answer = simple_answer_stub(req.question, context)
-    return AnswerResponse(answer=answer, sources=qr.hits)"""
+# Old answer implementation (replaced with Cohere version below):
+# @app.post("/answer", response_model=AnswerResponse)
+# async def answer(req: QueryRequest):
+#     qr = await query(req)
+#     context = "\n\n".join(h.preview for h in qr.hits)
+#     answer = simple_answer_stub(req.question, context)
+#     return AnswerResponse(answer=answer, sources=qr.hits)
 
 @app.post("/answer", response_model=AnswerResponse)
 async def answer(req: QueryRequest):

@@ -1,109 +1,1413 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Oracle AI Tutor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100">
-    <div class="max-w-3xl mx-auto py-8 px-4">
-      <h1 class="text-3xl font-bold mb-4 text-center">Oracle AI Tutor</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSS Decal AI Tutor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f0f;
+      --bg-secondary: #121a1a;
+      --bg-tertiary: #1a2525;
+      --bg-card: #16201f;
+      --accent-primary: #14b8a6;
+      --accent-secondary: #2dd4bf;
+      --accent-glow: rgba(20, 184, 166, 0.3);
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border-color: #27272a;
+      --success: #22c55e;
+      --error: #ef4444;
+      --gold: #fbbf24;
+      --silver: #94a3b8;
+      --bronze: #d97706;
+    }
 
-      <div id="chatBox"
-           class="bg-white p-4 h-[450px] overflow-y-auto rounded shadow mb-3">
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(20, 184, 166, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(20, 184, 166, 0.08), transparent);
+    }
+
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .auth-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card);
+      border-color: var(--accent-primary);
+    }
+
+    .btn-logout {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-logout:hover {
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 4px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 14px 24px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .nav-tab.active {
+      background: var(--bg-card);
+      color: var(--accent-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-content {
+      display: none;
+      flex: 1;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Chat Section */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      max-height: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: var(--bg-tertiary);
+    }
+
+    .message.assistant .message-avatar {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    }
+
+    .message-content {
+      padding: 14px 18px;
+      border-radius: 16px;
+      line-height: 1.6;
+    }
+
+    .message.user .message-content {
+      background: var(--accent-primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .message-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-content pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .sources-toggle {
+      margin-top: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .sources-toggle summary {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sources-toggle summary:hover {
+      color: var(--text-primary);
+    }
+
+    .source-item {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+
+    .source-item strong {
+      color: var(--accent-primary);
+    }
+
+    .chat-input-container {
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    #questionInput {
+      flex: 1;
+      padding: 16px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #questionInput:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    #questionInput::placeholder {
+      color: var(--text-muted);
+    }
+
+    #sendBtn {
+      padding: 16px 28px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #sendBtn:hover {
+      box-shadow: 0 0 24px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    #sendBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Leaderboard Section */
+    .leaderboard-container {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .leaderboard-header {
+      padding: 24px;
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-tertiary));
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .leaderboard-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .leaderboard-header p {
+      color: var(--text-secondary);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leaderboard-table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .leaderboard-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .leaderboard-table tr:hover td {
+      background: var(--bg-tertiary);
+    }
+
+    .rank-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .rank-1 { color: var(--gold); }
+    .rank-2 { color: var(--silver); }
+    .rank-3 { color: var(--bronze); }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .rank-1 .rank-badge { background: rgba(251, 191, 36, 0.2); }
+    .rank-2 .rank-badge { background: rgba(148, 163, 184, 0.2); }
+    .rank-3 .rank-badge { background: rgba(217, 119, 6, 0.2); }
+
+    .player-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+    }
+
+    .accuracy-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .accuracy-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 100px;
+    }
+
+    .accuracy-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--success));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: rgba(20, 184, 166, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--accent-secondary);
+    }
+
+    /* Stats Section */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .stat-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .stat-card-icon.queries { background: rgba(59, 130, 246, 0.2); }
+    .stat-card-icon.mcqs { background: rgba(168, 85, 247, 0.2); }
+    .stat-card-icon.correct { background: rgba(34, 197, 94, 0.2); }
+    .stat-card-icon.accuracy { background: rgba(20, 184, 166, 0.2); }
+    .stat-card-icon.streak { background: rgba(236, 72, 153, 0.2); }
+    .stat-card-icon.answered { background: rgba(14, 165, 233, 0.2); }
+
+    .stat-card-title {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-card-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Auth Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+    }
+
+    .modal-header p {
+      color: var(--text-secondary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .modal-actions .auth-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    .modal-switch {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .modal-switch a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .modal-switch a:hover {
+      text-decoration: underline;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    /* Loading States */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 12px;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .nav-tabs {
+        flex-wrap: wrap;
+      }
+
+      .nav-tab {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+      }
+
+      .leaderboard-table {
+        font-size: 0.85rem;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 12px;
+      }
+
+      .modal {
+        margin: 20px;
+        padding: 24px;
+      }
+    }
+
+    /* Hidden utility */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🎓</div>
+        <h1>DSS Decal AI Tutor</h1>
+      </div>
+      <div class="user-section">
+        <div id="guestSection">
+          <button class="auth-btn btn-secondary" onclick="showAuthModal('login')">Log In</button>
+          <button class="auth-btn btn-primary" onclick="showAuthModal('register')">Sign Up</button>
+        </div>
+        <div id="userSection" class="hidden">
+          <div class="user-info">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <span id="userName">User</span>
+          </div>
+          <button class="auth-btn btn-logout" onclick="logout()">Log Out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="chat">
+        💬 AI Tutor
+      </button>
+      <button class="nav-tab" data-tab="leaderboard">
+        🏆 Leaderboard
+      </button>
+      <button class="nav-tab" data-tab="stats">
+        📊 My Stats
+      </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Chat Tab -->
+      <div id="chatTab" class="tab-content active">
+        <div class="chat-container">
+          <div id="chatBox" class="chat-messages">
+            <div class="message assistant">
+              <div class="message-avatar">🤖</div>
+              <div class="message-content">
+                <pre>Hello! I'm your AI Tutor for Data Science. Ask me anything about the course material — concepts, pandas, data cleaning, or EDA. I can also quiz you with multiple choice questions!</pre>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+              <input type="text" id="questionInput" placeholder="Ask a question about the course..." />
+              <button id="sendBtn">
+                <span>Ask</span>
+                <span>→</span>
+              </button>
+            </div>
+            <div id="status" class="status-text"></div>
+          </div>
+        </div>
       </div>
 
-      <div id="status" class="text-sm text-gray-500 mb-2"></div>
+      <!-- Leaderboard Tab -->
+      <div id="leaderboardTab" class="tab-content">
+        <div class="leaderboard-container">
+          <div class="leaderboard-header">
+            <h2>🏆 Community Leaderboard</h2>
+            <p>See how you rank against other students in the class</p>
+          </div>
+          <div id="leaderboardContent">
+            <div class="loading">
+              <div class="spinner"></div>
+              <span>Loading leaderboard...</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div class="flex gap-2">
-        <input id="questionInput"
-               class="flex-1 border rounded p-3"
-               placeholder="Ask a question about the course..." />
-        <button id="sendBtn"
-                class="bg-blue-600 text-white px-5 py-3 rounded hover:bg-blue-700">
-          Ask
-        </button>
+      <!-- Stats Tab -->
+      <div id="statsTab" class="tab-content">
+        <div id="statsContent">
+          <div class="empty-state">
+            <div class="empty-state-icon">🔒</div>
+            <h3>Log in to see your stats</h3>
+            <p>Track your progress, see how many questions you've asked, and monitor your MCQ accuracy.</p>
+            <button class="auth-btn btn-primary" style="margin-top: 20px;" onclick="showAuthModal('login')">Log In</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="authTitle">Sign In</h2>
+        <p id="authSubtitle">Welcome back! Log in to track your progress.</p>
+      </div>
+      
+      <div id="authError" class="error-message"></div>
+      
+      <form id="authForm" onsubmit="handleAuth(event)">
+        <div id="nameField" class="form-group hidden">
+          <label for="displayName">Display Name</label>
+          <input type="text" id="displayName" placeholder="Your name on the leaderboard" />
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+        
+        <div class="modal-actions">
+          <button type="submit" class="auth-btn btn-primary" id="authSubmitBtn">Sign In</button>
+          <button type="button" class="auth-btn btn-secondary" onclick="hideAuthModal()">Cancel</button>
+        </div>
+      </form>
+      
+      <div class="modal-switch">
+        <span id="switchText">Don't have an account?</span>
+        <a id="switchLink" onclick="toggleAuthMode()">Sign up</a>
       </div>
     </div>
+  </div>
 
-    <script>
-      const chatBox = document.getElementById("chatBox");
-      const statusEl = document.getElementById("status");
-      const questionInput = document.getElementById("questionInput");
-      const sendBtn = document.getElementById("sendBtn");
+  <script>
+    // ============ Configuration ============
+    const RAG_API_URL = ""; // Leave empty to use same origin, or set to your RAG service URL
+    const LEADERBOARD_API_URL = "http://127.0.0.1:8001"; // Leaderboard backend URL
 
-      function addMessage(role, text) {
-        const div = document.createElement("div");
-        const bg = role === "user" ? "bg-green-100" : "bg-blue-50";
-        const who = role === "user" ? "You" : "Tutor";
+    // ============ State ============
+    let currentUser = null;
+    let authMode = "login"; // "login" or "register"
 
-        div.className = `mb-3 p-3 rounded ${bg}`;
-        div.innerHTML = `<strong>${who}:</strong><br><pre class="whitespace-pre-wrap">${text}</pre>`;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
+    // ============ Tab Navigation ============
+    document.querySelectorAll(".nav-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        const tabName = tab.dataset.tab;
+        
+        // Update active tab
+        document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        
+        // Update active content
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        document.getElementById(`${tabName}Tab`).classList.add("active");
+        
+        // Load data if needed
+        if (tabName === "leaderboard") {
+          loadLeaderboard();
+        } else if (tabName === "stats" && currentUser) {
+          loadMyStats();
+        }
+      });
+    });
 
-      function addSources(sources) {
-        if (!sources || !sources.length) return;
-        const wrapper = document.createElement("details");
-        wrapper.className = "mb-3 p-3 rounded bg-gray-50";
+    // ============ Chat Functionality ============
+    const chatBox = document.getElementById("chatBox");
+    const statusEl = document.getElementById("status");
+    const questionInput = document.getElementById("questionInput");
+    const sendBtn = document.getElementById("sendBtn");
 
-        const summary = document.createElement("summary");
-        summary.className = "cursor-pointer font-semibold";
-        summary.textContent = "Sources used";
-        wrapper.appendChild(summary);
+    function addMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = `message ${role}`;
+      
+      const avatar = role === "user" ? "👤" : "🤖";
+      
+      div.innerHTML = `
+        <div class="message-avatar">${avatar}</div>
+        <div class="message-content">
+          <pre>${escapeHtml(text)}</pre>
+        </div>
+      `;
+      
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-        sources.forEach((s) => {
-          const d = document.createElement("div");
-          d.className = "mt-2 text-sm";
-          d.innerHTML =
-            `<b>ID ${s.id}</b> (${s.source_uri}, score=${s.score.toFixed(4)})<br>` +
-            `${s.preview}`;
-          wrapper.appendChild(d);
+    function addSources(sources) {
+      if (!sources || !sources.length) return;
+      
+      const details = document.createElement("details");
+      details.className = "sources-toggle";
+      
+      details.innerHTML = `
+        <summary>📚 Sources used (${sources.length})</summary>
+        ${sources.map(s => `
+          <div class="source-item">
+            <strong>ID ${s.id}</strong> (${s.source_uri}, score: ${s.score.toFixed(4)})<br>
+            ${escapeHtml(s.preview)}
+          </div>
+        `).join("")}
+      `;
+      
+      chatBox.appendChild(details);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendQuestion() {
+      const q = questionInput.value.trim();
+      if (!q) return;
+
+      addMessage("user", q);
+      questionInput.value = "";
+      statusEl.textContent = "Thinking...";
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${RAG_API_URL}/answer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question: q,
+            course: "DATA100_FALL25",
+            k: 5
+          }),
         });
 
-        chatBox.appendChild(wrapper);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-
-      async function send() {
-        const q = questionInput.value.trim();
-        if (!q) return;
-
-        addMessage("user", q);
-        questionInput.value = "";
-        statusEl.textContent = "Thinking...";
-
-        try {
-          const res = await fetch("/answer", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              question: q,
-              course: "DATA100_FALL25",
-              k: 5
-            }),
-          });
-
-          if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`HTTP ${res.status}: ${text}`);
-          }
-
-          const data = await res.json();
-          addMessage("assistant", data.answer);
-          addSources(data.sources);
-          statusEl.textContent = "";
-        } catch (err) {
-          console.error(err);
-          statusEl.textContent = "Error: " + err.message;
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status}: ${text}`);
         }
+
+        const data = await res.json();
+        addMessage("assistant", data.answer);
+        addSources(data.sources);
+        statusEl.textContent = "";
+        
+        // Log event if logged in
+        if (currentUser) {
+          logEvent("query", q);
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error: " + err.message;
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    sendBtn.addEventListener("click", sendQuestion);
+    questionInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendQuestion();
+    });
+
+    // ============ Leaderboard ============
+    async function loadLeaderboard() {
+      const content = document.getElementById("leaderboardContent");
+      content.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>Loading leaderboard...</span>
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`${LEADERBOARD_API_URL}/leaderboard`);
+        if (!res.ok) throw new Error("Failed to load leaderboard");
+        
+        const data = await res.json();
+        
+        if (data.length === 0) {
+          content.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">🏆</div>
+              <h3>No data yet</h3>
+              <p>Be the first to appear on the leaderboard by asking questions!</p>
+            </div>
+          `;
+          return;
+        }
+
+        content.innerHTML = `
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Student</th>
+                <th>Queries</th>
+                <th>MCQs</th>
+                <th>Correct</th>
+                <th>Accuracy</th>
+                <th>Streak</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map((row, i) => `
+                <tr>
+                  <td class="rank-cell rank-${i + 1}">
+                    <span class="rank-badge">${getRankIcon(i + 1)}</span>
+                  </td>
+                  <td class="player-name">${escapeHtml(row.display_name)}</td>
+                  <td class="stat-value">${row.total_queries}</td>
+                  <td class="stat-value">${row.total_mcqs_generated}</td>
+                  <td class="stat-value">${row.total_mcqs_correct}</td>
+                  <td>
+                    <div class="accuracy-bar">
+                      <div class="accuracy-bar-bg">
+                        <div class="accuracy-bar-fill" style="width: ${row.avg_accuracy * 100}%"></div>
+                      </div>
+                      <span class="stat-value">${(row.avg_accuracy * 100).toFixed(1)}%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="streak-badge">🔥 ${row.streak_days}</span>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      } catch (err) {
+        console.error(err);
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <h3>Could not load leaderboard</h3>
+            <p>Make sure the leaderboard backend is running on ${LEADERBOARD_API_URL}</p>
+          </div>
+        `;
+      }
+    }
+
+    function getRankIcon(rank) {
+      if (rank === 1) return "🥇";
+      if (rank === 2) return "🥈";
+      if (rank === 3) return "🥉";
+      return rank;
+    }
+
+    // ============ My Stats ============
+    async function loadMyStats() {
+      const content = document.getElementById("statsContent");
+      
+      if (!currentUser) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔒</div>
+            <h3>Log in to see your stats</h3>
+            <p>Track your progress, see how many questions you've asked, and monitor your MCQ accuracy.</p>
+            <button class="auth-btn btn-primary" style="margin-top: 20px;" onclick="showAuthModal('login')">Log In</button>
+          </div>
+        `;
+        return;
       }
 
-      sendBtn.addEventListener("click", send);
-      questionInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") send();
-      });
-    </script>
-  </body>
+      content.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>Loading your stats...</span>
+        </div>
+      `;
+
+      try {
+        const res = await fetch(`${LEADERBOARD_API_URL}/users/me/stats`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        
+        if (!res.ok) throw new Error("Failed to load stats");
+        
+        const stats = await res.json();
+        
+        content.innerHTML = `
+          <div class="stats-container">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon queries">❓</div>
+                <div>
+                  <div class="stat-card-title">Total Queries</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${stats.total_queries}</div>
+              <div class="stat-card-subtitle">Questions asked to the tutor</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon mcqs">📝</div>
+                <div>
+                  <div class="stat-card-title">MCQs Generated</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${stats.total_mcqs_generated}</div>
+              <div class="stat-card-subtitle">Practice questions received</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon answered">✏️</div>
+                <div>
+                  <div class="stat-card-title">MCQs Answered</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${stats.total_mcqs_answered}</div>
+              <div class="stat-card-subtitle">Questions you've attempted</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon correct">✅</div>
+                <div>
+                  <div class="stat-card-title">Correct Answers</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${stats.total_mcqs_correct}</div>
+              <div class="stat-card-subtitle">Questions answered correctly</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon accuracy">🎯</div>
+                <div>
+                  <div class="stat-card-title">Accuracy</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${(stats.avg_accuracy * 100).toFixed(1)}%</div>
+              <div class="stat-card-subtitle">Your overall accuracy rate</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <div class="stat-card-icon streak">🔥</div>
+                <div>
+                  <div class="stat-card-title">Current Streak</div>
+                </div>
+              </div>
+              <div class="stat-card-value">${stats.streak_days}</div>
+              <div class="stat-card-subtitle">Consecutive days active</div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <h3>Could not load your stats</h3>
+            <p>Make sure the backend is running and you're logged in.</p>
+          </div>
+        `;
+      }
+    }
+
+    // ============ Authentication ============
+    function showAuthModal(mode) {
+      authMode = mode;
+      updateAuthModalUI();
+      document.getElementById("authModal").classList.add("active");
+      document.getElementById("authError").classList.remove("show");
+    }
+
+    function hideAuthModal() {
+      document.getElementById("authModal").classList.remove("active");
+      document.getElementById("authForm").reset();
+    }
+
+    function toggleAuthMode() {
+      authMode = authMode === "login" ? "register" : "login";
+      updateAuthModalUI();
+    }
+
+    function updateAuthModalUI() {
+      const isLogin = authMode === "login";
+      
+      document.getElementById("authTitle").textContent = isLogin ? "Sign In" : "Create Account";
+      document.getElementById("authSubtitle").textContent = isLogin 
+        ? "Welcome back! Log in to track your progress."
+        : "Join the class and start learning!";
+      document.getElementById("nameField").classList.toggle("hidden", isLogin);
+      document.getElementById("authSubmitBtn").textContent = isLogin ? "Sign In" : "Create Account";
+      document.getElementById("switchText").textContent = isLogin 
+        ? "Don't have an account?"
+        : "Already have an account?";
+      document.getElementById("switchLink").textContent = isLogin ? "Sign up" : "Sign in";
+    }
+
+    async function handleAuth(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const displayName = document.getElementById("displayName").value;
+      const errorEl = document.getElementById("authError");
+      
+      errorEl.classList.remove("show");
+
+      const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
+      const body = authMode === "login" 
+        ? { email, password }
+        : { email, password, display_name: displayName || email.split("@")[0] };
+
+      try {
+        const res = await fetch(`${LEADERBOARD_API_URL}${endpoint}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.detail || "Authentication failed");
+        }
+
+        // Save token and update UI
+        localStorage.setItem("token", data.access_token);
+        await loadCurrentUser();
+        hideAuthModal();
+        
+        // Refresh stats if on that tab
+        if (document.getElementById("statsTab").classList.contains("active")) {
+          loadMyStats();
+        }
+      } catch (err) {
+        console.error(err);
+        errorEl.textContent = err.message;
+        errorEl.classList.add("show");
+      }
+    }
+
+    async function loadCurrentUser() {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        currentUser = null;
+        updateUserUI();
+        return;
+      }
+
+      try {
+        const res = await fetch(`${LEADERBOARD_API_URL}/users/me/stats`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        
+        if (!res.ok) {
+          throw new Error("Invalid token");
+        }
+        
+        const data = await res.json();
+        currentUser = { name: data.display_name };
+        updateUserUI();
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("token");
+        currentUser = null;
+        updateUserUI();
+      }
+    }
+
+    function updateUserUI() {
+      const guestSection = document.getElementById("guestSection");
+      const userSection = document.getElementById("userSection");
+      
+      if (currentUser) {
+        guestSection.classList.add("hidden");
+        userSection.classList.remove("hidden");
+        document.getElementById("userName").textContent = currentUser.name;
+        document.getElementById("userAvatar").textContent = currentUser.name.charAt(0).toUpperCase();
+      } else {
+        guestSection.classList.remove("hidden");
+        userSection.classList.add("hidden");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      currentUser = null;
+      updateUserUI();
+      
+      // Refresh stats tab if visible
+      if (document.getElementById("statsTab").classList.contains("active")) {
+        loadMyStats();
+      }
+    }
+
+    // ============ Event Logging ============
+    async function logEvent(eventType, queryText = null, isCorrect = null) {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        // This endpoint would need to be added to main.py
+        // For now, we just track locally
+        console.log("Event logged:", eventType, queryText);
+      } catch (err) {
+        console.error("Failed to log event:", err);
+      }
+    }
+
+    // ============ Utilities ============
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ============ Initialize ============
+    document.addEventListener("DOMContentLoaded", () => {
+      loadCurrentUser();
+    });
+
+    // Close modal on backdrop click
+    document.getElementById("authModal").addEventListener("click", (e) => {
+      if (e.target.id === "authModal") {
+        hideAuthModal();
+      }
+    });
+  </script>
+</body>
 </html>

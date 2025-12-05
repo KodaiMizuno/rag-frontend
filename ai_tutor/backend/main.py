@@ -1,6 +1,7 @@
 # backend/main.py
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.middleware.cors import CORSMiddleware
 import jwt
 from models import RegisterRequest, LoginRequest, TokenResponse, UserStats
 from auth import hash_password, check_password, create_access_token, get_user, create_user
@@ -9,7 +10,16 @@ from crud import get_user_stats, get_leaderboard, log_event
 SECRET_KEY = "SUPER_SECRET_KEY"
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-app = FastAPI()
+app = FastAPI(title="AI Tutor Leaderboard API")
+
+# CORS - allow frontend to call this backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
