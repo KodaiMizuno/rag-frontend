@@ -1,1 +1,33 @@
+
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+*.log
+
+# Wallet (don't commit secrets!)
+wallet_dir/
+wallet.tar.gz
+wallet_base64.txt
+
+# Data files
+data/raw_pdfs/
+data/*.txt
+
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
