@@ -805,7 +805,7 @@ async def get_dashboard_overview(user: dict = Depends(require_teacher)):
 
 @app.get("/dashboard/students", response_model=List[StudentStats])
 async def get_student_stats(user: dict = Depends(require_teacher)):
-    """Get student statistics (teachers only)"""
+    """Get all students with their statistics"""
     with db.conn.cursor() as cur:
         cur.execute("""
             SELECT 
@@ -834,6 +834,7 @@ async def get_student_stats(user: dict = Depends(require_teacher)):
         )
         for row in rows
     ]
+
 
 @app.get("/dashboard/popular-topics")
 async def get_popular_topics(user: dict = Depends(require_teacher)):
@@ -867,6 +868,67 @@ async def cleanup_guest_session(user_id: str = None):
     if user_id:
         db.cleanup_guest_sessions(user_id)
     return {"message": "Cleaned up"}
+
+
+@app.get("/dashboard/student/search")
+async def search_student_by_email(email: str, user: dict = Depends(require_teacher)):
+    """Search for a student by email"""
+    with db.conn.cursor() as cur:
+        cur.execute("""
+            SELECT 
+                u.user_id,
+                u.email,
+                u.name,
+                COUNT(DISTINCT q.query_hash) as total_questions,
+                SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) as mastered,
+                MAX(q.timestamp) as last_active
+            FROM USERS u
+            LEFT JOIN USER_QUERIES q ON u.user_id = q.user_id
+            WHERE LOWER(u.email) = LOWER(:1) AND u.role = 'student'
+            GROUP BY u.user_id, u.email, u.name
+        """, [email])
+        row = cur.fetchone()
+    
+    if not row:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    return {
+        "user_id": row[0],
+        "email": row[1],
+        "name": row[2] or "Unknown",
+        "total_questions": row[3] or 0,
+        "mastered_topics": row[4] or 0,
+        "last_active": str(row[5]) if row[5] else None
+    }
+
+
+@app.get("/dashboard/student/{student_id}/activity")
+async def get_student_activity(student_id: str, user: dict = Depends(require_teacher)):
+    """Get all activity/questions for a specific student"""
+    with db.conn.cursor() as cur:
+        cur.execute("""
+            SELECT query_text, answered_correctly, timestamp
+            FROM USER_QUERIES
+            WHERE user_id = :1
+            ORDER BY timestamp DESC
+        """, [student_id])
+        rows = cur.fetchall()
+    
+    activity = []
+    for row in rows:
+        query_text = row[0]
+        # Handle CLOB
+        if hasattr(query_text, 'read'):
+            query_text = query_text.read()
+        
+        activity.append({
+            "query_text": query_text,
+            "answered_correctly": row[1] or 'N',
+            "timestamp": str(row[2]) if row[2] else None
+        })
+    
+    return activity
+
 
 # ============== SESSION ==============
 
