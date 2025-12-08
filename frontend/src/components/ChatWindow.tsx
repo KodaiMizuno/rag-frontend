@@ -176,8 +176,15 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
 
       if (response.ok) {
         const data = await response.json();
+        
+        // --- FIX START: Sort messages by timestamp ---
+        const sortedData = data.sort((a: any, b: any) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+        // --- FIX END ---
+
         setMessages(
-          data.map((msg: any) => ({
+          sortedData.map((msg: any) => ({
             id: msg.message_id,
             role: msg.role,
             content: msg.content,
@@ -305,8 +312,9 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
 
   return (
     <div className="flex flex-col h-full bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 font-sans">
-      {/* Header */}
-      <div className="bg-berkeley-blue text-white px-6 py-4 flex items-center gap-3 shadow-md">
+      
+      {/* 1. Header (Fixed at top) */}
+      <div className="bg-berkeley-blue text-white px-6 py-4 flex items-center gap-3 shadow-md z-10">
         <div className="p-2 bg-white/10 rounded-full">
           <BookOpen className="w-5 h-5 text-california-gold" />
         </div>
@@ -318,8 +326,10 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
         </div>
       </div>
 
-      {/* Chat Area */}
+      {/* 2. Chat Area (Scrollable - takes remaining space) */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50/50">
+        
+        {/* Empty State */}
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-4 opacity-50">
             <Sparkles className="w-16 h-16 text-california-gold" />
@@ -327,6 +337,7 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           </div>
         )}
 
+        {/* Messages List */}
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -343,18 +354,14 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
               </div>
 
-              <p
-                className={`text-[10px] mt-2 text-right ${
-                  msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'
-                }`}
-              >
+              <p className={`text-[10px] mt-2 text-right ${msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'}`}>
                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
             </div>
           </div>
         ))}
 
-        {/* Loading */}
+        {/* Loading Indicator */}
         {isLoading && (
           <div className="flex justify-start items-center gap-2 ml-10">
             <div className="flex space-x-1">
@@ -365,54 +372,57 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           </div>
         )}
 
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* MCQ Section - Fixed above input */}
-      {mcq && mcq.has_question && (
-        <div className="border-t border-amber-200 bg-amber-50 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
-          </div>
-
-          <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
-          </div>
-
-          {showMcqFeedback && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm border ${
-                showMcqFeedback.includes('Correct')
-                  ? 'bg-green-50 text-green-800 border-green-200'
-                  : 'bg-red-50 text-red-800 border-red-200'
-              }`}
-            >
-              <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
+        {/* MCQ Section */}
+        {mcq && mcq.has_question && (
+          <div className="max-w-[85%] bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertCircle className="w-5 h-5 text-amber-600" />
+              <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
             </div>
-          )}
 
-          {!isCorrectlyAnswered && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {['A', 'B', 'C', 'D'].map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => handleMcqAnswer(opt)}
-                  className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 text-amber-900 font-semibold transition-all text-sm flex items-center justify-center gap-2"
-                >
-                  <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs">
+            <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
+            </div>
+
+            {showMcqFeedback && (
+              <div
+                className={`mb-4 p-3 rounded-lg text-sm border ${
+                  showMcqFeedback.includes('Correct')
+                    ? 'bg-green-50 text-green-800 border-green-200'
+                    : 'bg-red-50 text-red-800 border-red-200'
+                }`}
+              >
+                <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
+              </div>
+            )}
+
+            {!isCorrectlyAnswered && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {['A', 'B', 'C', 'D'].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => handleMcqAnswer(opt)}
+                    className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 text-amber-900 font-semibold transition-all text-sm flex items-center justify-center gap-2 active:scale-95"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs">
+                      {opt}
+                    </span>
                     {opt}
-                  </span>
-                  {opt}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-      {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100">
+        {/* INVISIBLE ANCHOR FOR AUTO-SCROLL */}
+        <div ref={messagesEndRef} />
+      
+      </div> 
+      {/* ^^^ This closing div was missing or misplaced in your code. It closes the scrollable Chat Area. */}
+
+      {/* 3. Input Area (Fixed at bottom) */}
+      <div className="p-4 bg-white border-t border-gray-100 z-10">
         <div className="flex gap-2 relative">
           <input
             ref={inputRef}
@@ -427,13 +437,14 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           <button
             onClick={handleSendMessage}
             disabled={!input.trim() || isLoading}
-            className="absolute right-2 top-1.5 p-2 bg-berkeley-blue text-white rounded-full hover:bg-blue-800 disabled:opacity-50 disabled:hover:bg-berkeley-blue transition-colors"
+            className="absolute right-2 top-1.5 p-2 bg-berkeley-blue text-white rounded-full hover:bg-blue-800 disabled:opacity-50 disabled:hover:bg-berkeley-blue transition-colors shadow-sm"
           >
             <Send className="w-5 h-5" />
           </button>
         </div>
         <p className="text-center text-[10px] text-gray-400 mt-2">AI can make mistakes. Check sources.</p>
       </div>
+
     </div>
   );
 }
