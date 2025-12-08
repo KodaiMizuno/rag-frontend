@@ -384,38 +384,30 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
         )}
 
         {messages.map((msg, index) => (
-          <div
+        <div
             key={index}
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+        >
             <div
-              className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm ${
+            className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm ${
                 msg.role === 'user'
-                  ? 'bg-berkeley-blue text-white rounded-br-none'
-                  : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
-              }`}
+                ? 'bg-berkeley-blue text-white rounded-br-none'
+                : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
+            }`}
             >
-              <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
-                {msg.role === 'assistant' ? (
-                  <TypedMessage
-                    content={msg.content}
-                    isLatest={index === messages.length - 1}
-                    speed={8}
-                  />
-                ) : (
-                  <p>{msg.content}</p>
-                )}
-              </div>
-
-              <p
-                className={`text-[10px] mt-2 text-right ${
-                  msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'
-                }`}
-              >
-                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
+            <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
             </div>
-          </div>
+
+            <p
+                className={`text-[10px] mt-2 text-right ${
+                msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'
+                }`}
+            >
+                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </p>
+            </div>
+        </div>
         ))}
 
         {/* Loading */}
