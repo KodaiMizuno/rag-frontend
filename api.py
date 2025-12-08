@@ -930,6 +930,7 @@ async def get_student_activity(student_id: str, user: dict = Depends(require_tea
     return activity
 
 # ============== LEADERBOARD & USER STATS ==============
+
 def calculate_streak_days(cursor, user_id: str) -> int:
     """Calculate actual consecutive days of activity"""
     try:
@@ -945,21 +946,17 @@ def calculate_streak_days(cursor, user_id: str) -> int:
         if not dates:
             return 0
         
-        # Get today's date
         today = datetime.now().date()
         
-        # Convert first date
         if hasattr(dates[0], 'date'):
             first_date = dates[0].date()
         else:
             first_date = dates[0]
         
-        # If last activity was more than 1 day ago, streak is 0
         days_since_last = (today - first_date).days
         if days_since_last > 1:
             return 0
         
-        # Count consecutive days
         streak = 1
         for i in range(1, len(dates)):
             if hasattr(dates[i-1], 'date'):
@@ -980,7 +977,8 @@ def calculate_streak_days(cursor, user_id: str) -> int:
         print(f"Streak calculation error: {e}")
         return 0
 
- @app.get("/leaderboard")
+
+@app.get("/leaderboard")
 async def get_leaderboard():
     """Get top students for leaderboard"""
     try:
@@ -1010,7 +1008,6 @@ async def get_leaderboard():
                 total_mcqs_answered = row[5] or 0
                 avg_accuracy = (total_mcqs_correct / total_mcqs_answered) if total_mcqs_answered > 0 else 0
                 
-                # Calculate streak
                 streak_days = 0
                 try:
                     streak_days = calculate_streak_days(cur, user_id)
@@ -1031,35 +1028,30 @@ async def get_leaderboard():
         print(f"Leaderboard error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    
+
 @app.get("/user/stats")
 async def get_user_stats_endpoint(user: dict = Depends(verify_token)):
     """Get current user's detailed stats"""
     user_id = user["user_id"]
     
     with db.conn.cursor() as cur:
-        # Total queries
         cur.execute("SELECT COUNT(*) FROM USER_QUERIES WHERE user_id = :1", [user_id])
         total_queries = cur.fetchone()[0] or 0
         
-        # MCQs answered (has Y or N)
         cur.execute("""
             SELECT COUNT(*) FROM USER_QUERIES 
             WHERE user_id = :1 AND answered_correctly IN ('Y', 'N')
         """, [user_id])
         total_mcqs_answered = cur.fetchone()[0] or 0
         
-        # MCQs correct
         cur.execute("""
             SELECT COUNT(*) FROM USER_QUERIES 
             WHERE user_id = :1 AND answered_correctly = 'Y'
         """, [user_id])
         total_mcqs_correct = cur.fetchone()[0] or 0
         
-        # Accuracy
         avg_accuracy = (total_mcqs_correct / total_mcqs_answered) if total_mcqs_answered > 0 else 0
         
-        # Calculate actual streak
         streak_days = calculate_streak_days(cur, user_id)
     
     return {
