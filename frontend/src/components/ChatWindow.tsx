@@ -9,62 +9,6 @@ import remarkGfm from 'remark-gfm';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// ============== TYPING EFFECT HOOK ==============
-function useTypingEffect(text: string, speed: number = 15, enabled: boolean = true) {
-  const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    if (!enabled) {
-      setDisplayedText(text);
-      return;
-    }
-
-    if (!text) {
-      setDisplayedText('');
-      return;
-    }
-
-    setIsTyping(true);
-    setDisplayedText('');
-
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.slice(0, index + 1));
-        index++;
-      } else {
-        setIsTyping(false);
-        clearInterval(interval);
-      }
-    }, speed);
-
-    return () => clearInterval(interval);
-  }, [text, speed, enabled]);
-
-  return { displayedText, isTyping };
-}
-
-// ============== TYPED MESSAGE COMPONENT ==============
-function TypedMessage({
-  content,
-  isLatest,
-  speed = 10,
-}: {
-  content: string;
-  isLatest: boolean;
-  speed?: number;
-}) {
-  const { displayedText, isTyping } = useTypingEffect(content, speed, isLatest);
-
-  return (
-    <div className="typed-message">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayedText}</ReactMarkdown>
-      {isTyping && <span className="typing-cursor" />}
-    </div>
-  );
-}
-
 // ============== API FUNCTIONS ==============
 async function sendMessage(
   message: string,
@@ -384,30 +328,30 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
         )}
 
         {messages.map((msg, index) => (
-        <div
+          <div
             key={index}
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-        >
+          >
             <div
-            className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm ${
+              className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm ${
                 msg.role === 'user'
-                ? 'bg-berkeley-blue text-white rounded-br-none'
-                : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
-            }`}
+                  ? 'bg-berkeley-blue text-white rounded-br-none'
+                  : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none'
+              }`}
             >
-            <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
+              <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-            </div>
+              </div>
 
-            <p
+              <p
                 className={`text-[10px] mt-2 text-right ${
-                msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'
+                  msg.role === 'user' ? 'text-blue-300' : 'text-gray-400'
                 }`}
-            >
+              >
                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </p>
+              </p>
             </div>
-        </div>
+          </div>
         ))}
 
         {/* Loading */}
@@ -421,52 +365,51 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           </div>
         )}
 
-        {/* MCQ Section */}
-        {mcq && mcq.has_question && (
-        <div className="sticky bottom-0 bg-gray-50/95 backdrop-blur-sm pt-4 pb-2">
-            <div className="max-w-[85%] mx-auto bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+        <div ref={messagesEndRef} />
+      </div>
 
-            <div className="flex items-center gap-2 mb-3">
-                <AlertCircle className="w-5 h-5 text-amber-600" />
-                <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
+      {/* MCQ Section - Fixed above input */}
+      {mcq && mcq.has_question && (
+        <div className="border-t border-amber-200 bg-amber-50 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertCircle className="w-5 h-5 text-amber-600" />
+            <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
+          </div>
+
+          <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
+          </div>
+
+          {showMcqFeedback && (
+            <div
+              className={`mb-4 p-3 rounded-lg text-sm border ${
+                showMcqFeedback.includes('Correct')
+                  ? 'bg-green-50 text-green-800 border-green-200'
+                  : 'bg-red-50 text-red-800 border-red-200'
+              }`}
+            >
+              <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
             </div>
+          )}
 
-            <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
-            </div>
-
-            {showMcqFeedback && (
-                <div
-                className={`mb-4 p-3 rounded-lg text-sm border ${
-                    showMcqFeedback.includes('Correct')
-                    ? 'bg-green-50 text-green-800 border-green-200'
-                    : 'bg-red-50 text-red-800 border-red-200'
-                }`}
+          {!isCorrectlyAnswered && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {['A', 'B', 'C', 'D'].map((opt) => (
+                <button
+                  key={opt}
+                  onClick={() => handleMcqAnswer(opt)}
+                  className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 text-amber-900 font-semibold transition-all text-sm flex items-center justify-center gap-2"
                 >
-                <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
-                </div>
-            )}
-
-            {!isCorrectlyAnswered && (
-                <div className="grid grid-cols-2 gap-3">
-                {['A', 'B', 'C', 'D'].map((opt) => (
-                    <button
-                    key={opt}
-                    onClick={() => handleMcqAnswer(opt)}
-                    className="px-4 py-3 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 text-amber-900 font-semibold transition-all shadow-sm text-left flex items-center gap-2 group"
-                    >
-                    <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs group-hover:bg-amber-200">
-                        {opt}
-                    </span>
-                    <span>Option {opt}</span>
-                    </button>
-                ))}
-                </div>
-            )}
+                  <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs">
+                    {opt}
+                  </span>
+                  {opt}
+                </button>
+              ))}
             </div>
+          )}
         </div>
-        )}
+      )}
 
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-100">
