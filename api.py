@@ -929,6 +929,92 @@ async def get_student_activity(student_id: str, user: dict = Depends(require_tea
     
     return activity
 
+    # ============== LEADERBOARD & USER STATS ==============
+
+@app.get("/leaderboard")
+async def get_leaderboard():
+    """Get top students by mastery (public endpoint)"""
+    with db.conn.cursor() as cur:
+        cur.execute("""
+            SELECT 
+                u.user_id,
+                u.name,
+                u.email,
+                COUNT(DISTINCT q.query_hash) as total_questions,
+                SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) as mastered_topics
+            FROM USERS u
+            LEFT JOIN USER_QUERIES q ON u.user_id = q.user_id
+            WHERE u.role = 'student'
+            GROUP BY u.user_id, u.name, u.email
+            HAVING COUNT(q.query_hash) > 0
+            ORDER BY SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) DESC NULLS LAST
+            FETCH FIRST 50 ROWS ONLY
+        """)
+        rows = cur.fetchall()
+    
+    leaderboard = []
+    for idx, row in enumerate(rows):
+        total_q = row[3] or 0
+        mastered = row[4] or 0
+        accuracy = round((mastered / total_q * 100), 1) if total_q > 0 else 0
+        
+        leaderboard.append({
+            "rank": idx + 1,
+            "user_id": row[0],
+            "name": row[1] or "Anonymous",
+            "email": row[2],
+            "total_questions": total_q,
+            "mastered_topics": mastered,
+            "accuracy": accuracy
+        })
+    
+    return leaderboard
+
+
+@app.get("/user/stats")
+async def get_user_stats_endpoint(user: dict = Depends(verify_token)):
+    """Get current user's detailed stats"""
+    user_id = user["user_id"]
+    
+    with db.conn.cursor() as cur:
+        # Total queries
+        cur.execute("SELECT COUNT(*) FROM USER_QUERIES WHERE user_id = :1", [user_id])
+        total_queries = cur.fetchone()[0] or 0
+        
+        # MCQs answered (has Y or N)
+        cur.execute("""
+            SELECT COUNT(*) FROM USER_QUERIES 
+            WHERE user_id = :1 AND answered_correctly IN ('Y', 'N')
+        """, [user_id])
+        total_mcqs_answered = cur.fetchone()[0] or 0
+        
+        # MCQs correct
+        cur.execute("""
+            SELECT COUNT(*) FROM USER_QUERIES 
+            WHERE user_id = :1 AND answered_correctly = 'Y'
+        """, [user_id])
+        total_mcqs_correct = cur.fetchone()[0] or 0
+        
+        # Accuracy
+        avg_accuracy = (total_mcqs_correct / total_mcqs_answered) if total_mcqs_answered > 0 else 0
+        
+        # Streak (consecutive days)
+        cur.execute("""
+            SELECT COUNT(DISTINCT TRUNC(timestamp)) 
+            FROM USER_QUERIES 
+            WHERE user_id = :1 AND timestamp >= TRUNC(SYSDATE) - 30
+        """, [user_id])
+        streak_days = cur.fetchone()[0] or 0
+    
+    return {
+        "total_queries": total_queries,
+        "total_mcqs_generated": total_queries,
+        "total_mcqs_answered": total_mcqs_answered,
+        "total_mcqs_correct": total_mcqs_correct,
+        "avg_accuracy": avg_accuracy,
+        "streak_days": streak_days
+    }
+
 
 # ============== SESSION ==============
 

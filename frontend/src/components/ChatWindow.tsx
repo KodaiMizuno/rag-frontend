@@ -297,7 +297,7 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           setMcq(null);
           setShowMcqFeedback(null);
           setIsCorrectlyAnswered(false);
-        }, 8000);
+        }, 20000);
       } else {
         setShowMcqFeedback('❌ **Incorrect.** Try again!');
       }
