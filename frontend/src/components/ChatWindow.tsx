@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, BookOpen, Sparkles, AlertCircle, Bot } from 'lucide-react';
 import { Message, MCQData, Source } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import SourceCard from './SourceCard';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -352,9 +351,6 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
               </div>
 
-              {msg.role === 'assistant' && msg.sources && msg.sources.length > 0 && (
-                <SourceCard sources={msg.sources} />
-              )}
 
               <p
                 className={`text-[10px] mt-2 text-right ${
