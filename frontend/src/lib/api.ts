@@ -58,7 +58,7 @@ export async function healthCheck() {
 export interface LeaderboardEntry {
   rank: number;
   user_id: string;
-  name: string;
+  display_name: string;
   email: string;
   total_questions: number;
   mastered_topics: number;

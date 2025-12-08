@@ -930,10 +930,9 @@ async def get_student_activity(student_id: str, user: dict = Depends(require_tea
     return activity
 
     # ============== LEADERBOARD & USER STATS ==============
-
 @app.get("/leaderboard")
 async def get_leaderboard():
-    """Get top students by mastery (public endpoint)"""
+    """Get top students by mastery"""
     with db.conn.cursor() as cur:
         cur.execute("""
             SELECT 
@@ -961,7 +960,7 @@ async def get_leaderboard():
         leaderboard.append({
             "rank": idx + 1,
             "user_id": row[0],
-            "name": row[1] or "Anonymous",
+            "display_name": row[1] or "Anonymous",  # Changed from "name" to "display_name"
             "email": row[2],
             "total_questions": total_q,
             "mastered_topics": mastered,
@@ -969,7 +968,6 @@ async def get_leaderboard():
         })
     
     return leaderboard
-
 
 @app.get("/user/stats")
 async def get_user_stats_endpoint(user: dict = Depends(verify_token)):
