@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, BookOpen, Sparkles, AlertCircle, Bot } from 'lucide-react';
+import { Send, BookOpen, Sparkles, AlertCircle } from 'lucide-react';
 import { Message, MCQData, Source } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import ReactMarkdown from 'react-markdown';
@@ -9,8 +9,63 @@ import remarkGfm from 'remark-gfm';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// ============== API FUNCTIONS ==============
+// ============== TYPING EFFECT HOOK ==============
+function useTypingEffect(text: string, speed: number = 15, enabled: boolean = true) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
+  useEffect(() => {
+    if (!enabled) {
+      setDisplayedText(text);
+      return;
+    }
+
+    if (!text) {
+      setDisplayedText('');
+      return;
+    }
+
+    setIsTyping(true);
+    setDisplayedText('');
+
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        setIsTyping(false);
+        clearInterval(interval);
+      }
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed, enabled]);
+
+  return { displayedText, isTyping };
+}
+
+// ============== TYPED MESSAGE COMPONENT ==============
+function TypedMessage({
+  content,
+  isLatest,
+  speed = 10,
+}: {
+  content: string;
+  isLatest: boolean;
+  speed?: number;
+}) {
+  const { displayedText, isTyping } = useTypingEffect(content, speed, isLatest);
+
+  return (
+    <div className="typed-message">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayedText}</ReactMarkdown>
+      {isTyping && <span className="typing-cursor" />}
+    </div>
+  );
+}
+
+// ============== API FUNCTIONS ==============
 async function sendMessage(
   message: string,
   userId?: string,
@@ -22,13 +77,12 @@ async function sendMessage(
   user_id: string;
   chat_id?: string;
 }> {
-  // Use authenticated endpoint if token exists
   if (token) {
     const response = await fetch(`${API_URL}/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         message,
@@ -49,7 +103,6 @@ async function sendMessage(
     };
   }
 
-  // Legacy endpoint for guests
   const response = await fetch(`${API_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -115,7 +168,6 @@ async function checkAnswer(
 }
 
 // ============== COMPONENT ==============
-
 interface ChatWindowProps {
   chatId?: string | null;
   onChatCreated?: (chatId: string) => void;
@@ -175,7 +227,7 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
 
     try {
       const response = await fetch(`${API_URL}/chats/${chatIdToLoad}/messages`, {
-        headers: { 'Authorization': `Bearer ${user.token}` },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
 
       if (response.ok) {
@@ -331,15 +383,11 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
           </div>
         )}
 
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            {/* Bot Avatar */}
-            {msg.role === 'assistant' && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2 bg-berkeley-blue text-white">
-                <Bot className="w-5 h-5" />
-              </div>
-            )}
-
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
             <div
               className={`max-w-[85%] rounded-2xl px-5 py-4 shadow-sm ${
                 msg.role === 'user'
@@ -348,9 +396,16 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
               }`}
             >
               <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert' : ''}`}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                {msg.role === 'assistant' ? (
+                  <TypedMessage
+                    content={msg.content}
+                    isLatest={index === messages.length - 1}
+                    speed={8}
+                  />
+                ) : (
+                  <p>{msg.content}</p>
+                )}
               </div>
-
 
               <p
                 className={`text-[10px] mt-2 text-right ${
