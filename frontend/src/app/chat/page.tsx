@@ -21,6 +21,27 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isLoading, router]);
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // Don't render chat if not logged in
+  if (!user) {
+    return null;
+  }
+
   const handleLogout = () => {
     logout();
     router.push('/login');
