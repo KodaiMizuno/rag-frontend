@@ -423,51 +423,50 @@ export default function ChatWindow({ chatId, onChatCreated }: ChatWindowProps) {
 
         {/* MCQ Section */}
         {mcq && mcq.has_question && (
-          <div className="ml-10 max-w-[85%] bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-sm relative overflow-hidden mt-4">
+        <div className="sticky bottom-0 bg-gray-50/95 backdrop-blur-sm pt-4 pb-2">
+            <div className="max-w-[85%] mx-auto bg-amber-50 rounded-xl p-5 border border-amber-200 shadow-lg relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
 
             <div className="flex items-center gap-2 mb-3">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+                <span className="font-bold text-amber-800 text-sm uppercase tracking-wide">Knowledge Check</span>
             </div>
 
             <div className="prose prose-sm prose-amber mb-4 text-gray-800 max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{mcq.question_text || ''}</ReactMarkdown>
             </div>
 
             {showMcqFeedback && (
-              <div
+                <div
                 className={`mb-4 p-3 rounded-lg text-sm border ${
-                  showMcqFeedback.includes('Correct')
+                    showMcqFeedback.includes('Correct')
                     ? 'bg-green-50 text-green-800 border-green-200'
                     : 'bg-red-50 text-red-800 border-red-200'
                 }`}
-              >
+                >
                 <ReactMarkdown>{showMcqFeedback}</ReactMarkdown>
-              </div>
+                </div>
             )}
 
             {!isCorrectlyAnswered && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                 {['A', 'B', 'C', 'D'].map((opt) => (
-                  <button
+                    <button
                     key={opt}
                     onClick={() => handleMcqAnswer(opt)}
                     className="px-4 py-3 bg-white border border-amber-200 rounded-lg hover:bg-amber-100 hover:border-amber-300 text-amber-900 font-semibold transition-all shadow-sm text-left flex items-center gap-2 group"
-                  >
+                    >
                     <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs group-hover:bg-amber-200">
-                      {opt}
+                        {opt}
                     </span>
                     <span>Option {opt}</span>
-                  </button>
+                    </button>
                 ))}
-              </div>
+                </div>
             )}
-          </div>
+            </div>
+        </div>
         )}
-
-        <div ref={messagesEndRef} />
-      </div>
 
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-100">
