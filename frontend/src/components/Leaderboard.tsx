@@ -66,7 +66,7 @@ export default function Leaderboard() {
         <div className="empty-state">
           <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
           <h3>Could not load leaderboard</h3>
-          <p className="text-gray-500 mb-4">Make sure the leaderboard backend is running</p>
+          <p className="text-gray-500 mb-4">Make sure the backend is running</p>
           <button 
             className="px-4 py-2 bg-berkeley-blue text-white rounded-lg hover:bg-blue-800 transition-colors"
             onClick={loadLeaderboard}
@@ -113,8 +113,7 @@ export default function Leaderboard() {
             <tr>
               <th>Rank</th>
               <th>Student</th>
-              <th>Queries</th>
-              <th>MCQs</th>
+              <th>Questions</th>
               <th>Correct</th>
               <th>Accuracy</th>
               <th>Streak</th>
@@ -128,7 +127,6 @@ export default function Leaderboard() {
                 </td>
                 <td className="player-name">{row.display_name}</td>
                 <td className="stat-value">{row.total_queries}</td>
-                <td className="stat-value">{row.total_mcqs_generated}</td>
                 <td className="stat-value">{row.total_mcqs_correct}</td>
                 <td>
                   <div className="accuracy-bar">
@@ -154,4 +152,3 @@ export default function Leaderboard() {
     </div>
   );
 }
-

@@ -114,7 +114,7 @@ export default function MyStats() {
       <StatCard
         icon="❓"
         iconClass="queries"
-        title="Total Queries"
+        title="Total Questions"
         value={stats.total_queries}
         subtitle="Questions asked to the tutor"
       />
@@ -122,17 +122,9 @@ export default function MyStats() {
       <StatCard
         icon="📝"
         iconClass="mcqs"
-        title="MCQs Generated"
-        value={stats.total_mcqs_generated}
-        subtitle="Practice questions received"
-      />
-      
-      <StatCard
-        icon="✏️"
-        iconClass="answered"
-        title="MCQs Answered"
+        title="MCQs Attempted"
         value={stats.total_mcqs_answered}
-        subtitle="Questions you've attempted"
+        subtitle="Quiz questions you've tried"
       />
       
       <StatCard
@@ -155,7 +147,7 @@ export default function MyStats() {
         icon="🔥"
         iconClass="streak"
         title="Current Streak"
-        value={stats.streak_days}
+        value={`${stats.streak_days} day${stats.streak_days !== 1 ? 's' : ''}`}
         subtitle="Consecutive days active"
       />
     </div>

@@ -56,13 +56,12 @@ export async function healthCheck() {
 // ============== LEADERBOARD ==============
 
 export interface LeaderboardEntry {
-  rank: number;
-  user_id: string;
   display_name: string;
-  email: string;
-  total_questions: number;
-  mastered_topics: number;
-  accuracy: number;
+  total_queries: number;
+  total_mcqs_answered: number;
+  total_mcqs_correct: number;
+  avg_accuracy: number;
+  streak_days: number;
 }
 
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
@@ -75,7 +74,6 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
 
 export interface UserStats {
   total_queries: number;
-  total_mcqs_generated: number;
   total_mcqs_answered: number;
   total_mcqs_correct: number;
   avg_accuracy: number;

@@ -929,45 +929,97 @@ async def get_student_activity(student_id: str, user: dict = Depends(require_tea
     
     return activity
 
-    # ============== LEADERBOARD & USER STATS ==============
+# ============== LEADERBOARD & USER STATS ==============
+
+def calculate_streak_days(cursor, user_id: str) -> int:
+    """Calculate actual consecutive days of activity"""
+    cursor.execute("""
+        SELECT DISTINCT TRUNC(timestamp) as activity_date
+        FROM USER_QUERIES
+        WHERE user_id = :1
+        ORDER BY activity_date DESC
+    """, [user_id])
+    
+    dates = [row[0] for row in cursor.fetchall()]
+    
+    if not dates:
+        return 0
+    
+    # Check if user was active today or yesterday
+    today = datetime.now().date()
+    if hasattr(dates[0], 'date'):
+        first_date = dates[0].date()
+    else:
+        first_date = dates[0]
+    
+    # If last activity was more than 1 day ago, streak is 0
+    days_since_last = (today - first_date).days
+    if days_since_last > 1:
+        return 0
+    
+    # Count consecutive days
+    streak = 1
+    for i in range(1, len(dates)):
+        if hasattr(dates[i-1], 'date'):
+            prev_date = dates[i-1].date()
+            curr_date = dates[i].date()
+        else:
+            prev_date = dates[i-1]
+            curr_date = dates[i]
+        
+        diff = (prev_date - curr_date).days
+        if diff == 1:
+            streak += 1
+        else:
+            break
+    
+    return streak
+
+
 @app.get("/leaderboard")
 async def get_leaderboard():
-    """Get top students by mastery"""
+    """Get top students for leaderboard"""
     with db.conn.cursor() as cur:
         cur.execute("""
             SELECT 
                 u.user_id,
                 u.name,
                 u.email,
-                COUNT(DISTINCT q.query_hash) as total_questions,
-                SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) as mastered_topics
+                COUNT(q.id) as total_queries,
+                SUM(CASE WHEN q.answered_correctly IN ('Y', 'N') THEN 1 ELSE 0 END) as total_mcqs_answered,
+                SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) as total_mcqs_correct
             FROM USERS u
             LEFT JOIN USER_QUERIES q ON u.user_id = q.user_id
             WHERE u.role = 'student'
             GROUP BY u.user_id, u.name, u.email
-            HAVING COUNT(q.query_hash) > 0
+            HAVING COUNT(q.id) > 0
             ORDER BY SUM(CASE WHEN q.answered_correctly = 'Y' THEN 1 ELSE 0 END) DESC NULLS LAST
             FETCH FIRST 50 ROWS ONLY
         """)
         rows = cur.fetchall()
-    
-    leaderboard = []
-    for idx, row in enumerate(rows):
-        total_q = row[3] or 0
-        mastered = row[4] or 0
-        accuracy = round((mastered / total_q * 100), 1) if total_q > 0 else 0
         
-        leaderboard.append({
-            "rank": idx + 1,
-            "user_id": row[0],
-            "display_name": row[1] or "Anonymous",  # Changed from "name" to "display_name"
-            "email": row[2],
-            "total_questions": total_q,
-            "mastered_topics": mastered,
-            "accuracy": accuracy
-        })
+        leaderboard = []
+        for row in rows:
+            user_id = row[0]
+            total_queries = row[3] or 0
+            total_mcqs_answered = row[4] or 0
+            total_mcqs_correct = row[5] or 0
+            avg_accuracy = (total_mcqs_correct / total_mcqs_answered) if total_mcqs_answered > 0 else 0
+            
+            # Calculate streak for each user
+            streak_days = calculate_streak_days(cur, user_id)
+            
+            leaderboard.append({
+                "display_name": row[1] or "Anonymous",
+                "total_queries": total_queries,
+                "total_mcqs_answered": total_mcqs_answered,
+                "total_mcqs_correct": total_mcqs_correct,
+                "avg_accuracy": avg_accuracy,
+                "streak_days": streak_days
+            })
     
     return leaderboard
+
 
 @app.get("/user/stats")
 async def get_user_stats_endpoint(user: dict = Depends(verify_token)):
@@ -996,23 +1048,16 @@ async def get_user_stats_endpoint(user: dict = Depends(verify_token)):
         # Accuracy
         avg_accuracy = (total_mcqs_correct / total_mcqs_answered) if total_mcqs_answered > 0 else 0
         
-        # Streak (consecutive days)
-        cur.execute("""
-            SELECT COUNT(DISTINCT TRUNC(timestamp)) 
-            FROM USER_QUERIES 
-            WHERE user_id = :1 AND timestamp >= TRUNC(SYSDATE) - 30
-        """, [user_id])
-        streak_days = cur.fetchone()[0] or 0
+        # Calculate actual streak
+        streak_days = calculate_streak_days(cur, user_id)
     
     return {
         "total_queries": total_queries,
-        "total_mcqs_generated": total_queries,
         "total_mcqs_answered": total_mcqs_answered,
         "total_mcqs_correct": total_mcqs_correct,
         "avg_accuracy": avg_accuracy,
         "streak_days": streak_days
     }
-
 
 # ============== SESSION ==============
 
